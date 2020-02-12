@@ -1,6 +1,6 @@
 ---
-- name: Install the agent
+- name: Install and configure the agent
   import_tasks: install.yml
 
-- name: Configure and enable the agent
-  import_tasks: configure.yml
+- name: Enable the agent
+  import_tasks: enable.yml
