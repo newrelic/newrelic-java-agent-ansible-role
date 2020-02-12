@@ -1,2 +1,7 @@
 ---
-# handlers file for tomcat_deploy
+- name: restart web server
+  service:
+    name: "{{ service_name }}"
+    state: restarted
+  become: yes
+  when: restart_web_server|bool

@@ -1,0 +1,32 @@
+---
+- name: Create the agent directory
+  file:
+    path: "{{ app_root }}/newrelic"
+    state: directory
+    owner: "{{ agent_user }}"
+    group: "{{ agent_group }}"
+  become: yes
+
+- name: Download the agent and unzip it into place
+  unarchive:
+    src: "{{ agent_download_url }}/{{ agent_version }}/newrelic-java.zip"
+    remote_src: yes
+    dest: "{{ app_root }}"
+    mode: "0755"
+    list_files: yes
+    owner: "{{ agent_user }}"
+    group: "{{ agent_group }}"
+  become: yes
+  tags:
+    - new-relic
+
+- name: Set up the New Relic config file
+  template:
+    src: "templates/newrelic.yml.j2"
+    dest: "{{ app_root }}/newrelic/newrelic.yml"
+    owner: "{{ agent_user }}"
+    group: "{{ agent_group }}"
+    mode: "0750"
+  become: yes
+  tags:
+    - new-relic

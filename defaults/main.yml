@@ -5,6 +5,8 @@
 agent_download_url: https://download.newrelic.com/newrelic/java-agent/newrelic-agent
 agent_version: current
 
+restart_web_server: false
+
 agent_config:
   license_key: YOUR_LICENSE_KEY
   app_name: Your App Name
@@ -24,6 +26,7 @@ jvm_conf_file: /usr/share/tomcat8/bin/setenv.sh
 agent_user: tomcat8
 agent_group: tomcat8
 
+service_name: tomcat8
 
 # Sample setup for jetty
 
@@ -33,3 +36,4 @@ agent_group: tomcat8
 
 # agent_user: jetty
 # agent_group: jetty
+# service_name: jetty

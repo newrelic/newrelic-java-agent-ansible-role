@@ -7,6 +7,8 @@
     mode: 0755
   when: server_type == "tomcat"
   become: yes
+  notify:
+    - restart web server
 
 - name: Jetty -javaagent setup
   lineinfile:
@@ -16,6 +18,8 @@
     mode: 0755
   when: server_type == "jetty"
   become: yes
+  notify:
+    - restart web server
 
 # FIXME: finish these
 - name: Wildfly standalone mode -javaagent setup
@@ -24,8 +28,10 @@
     line: blahhhhhhhhhhhhhhhhh 
     create: yes
     mode: 0755
-  when: server_type == "wildfly blah"
+  when: server_type == "wildfly standalone"
   become: yes
+  notify:
+    - restart web server
 
 - name: Wildfly domain mode -javaagent setup
   blockinfile:
@@ -33,5 +39,7 @@
     line: blahhhhhhhhhhhhhhhhh
     create: yes
     mode: 0755
-  when: server_type == "wildfly barf"
+  when: server_type == "wildfly domain"
   become: yes
+  notify:
+    - restart web server
