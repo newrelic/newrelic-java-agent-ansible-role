@@ -1,0 +1,37 @@
+---
+- name: Tomcat -javaagent setup
+  lineinfile:
+    dest: "{{ jvm_conf_file }}"
+    line: export JAVA_OPTS="$JAVA_OPTS -javaagent:{{ app_root }}/newrelic/newrelic.jar"
+    create: yes
+    mode: 0755
+  when: server_type == "tomcat"
+  become: yes
+
+- name: Jetty -javaagent setup
+  lineinfile:
+    dest: "{{ jvm_conf_file }}"
+    line: export JAVA_OPTIONS="${JAVA_OPTIONS} -javaagent:{{ app_root }}/newrelic/newrelic.jar"
+    create: yes
+    mode: 0755
+  when: server_type == "jetty"
+  become: yes
+
+# FIXME: finish these
+- name: Wildfly standalone mode -javaagent setup
+  lineinfile:
+    dest: "{{ jvm_conf_file }}"
+    line: blahhhhhhhhhhhhhhhhh 
+    create: yes
+    mode: 0755
+  when: server_type == "wildfly blah"
+  become: yes
+
+- name: Wildfly domain mode -javaagent setup
+  blockinfile:
+    dest: "{{ jvm_conf_file }}"
+    line: blahhhhhhhhhhhhhhhhh
+    create: yes
+    mode: 0755
+  when: server_type == "wildfly barf"
+  become: yes

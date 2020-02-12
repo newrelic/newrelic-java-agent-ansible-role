@@ -1,0 +1,5 @@
+hosts:
+  ansible_target:
+    ansible_connection: ssh
+    ansible_username: ubuntu
+    ansible_password: ubuntu

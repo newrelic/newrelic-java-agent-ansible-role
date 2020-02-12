@@ -1,0 +1,35 @@
+---
+
+# Server-agnostic configuration
+
+agent_download_url: https://download.newrelic.com/newrelic/java-agent/newrelic-agent
+agent_version: current
+
+agent_config:
+  license_key: YOUR_LICENSE_KEY
+  app_name: Your App Name
+  # Example for proxy
+  # proxy_host: proxy.example.com
+  # proxy_port: 4321
+  # proxy_user: <proxy username>
+  # proxy_password: <proxy password>
+  # proxy_scheme: https
+
+# Default setup is for tomcat
+
+server_type: tomcat
+app_root: /var/lib/tomcat8
+jvm_conf_file: /usr/share/tomcat8/bin/setenv.sh
+
+agent_user: tomcat8
+agent_group: tomcat8
+
+
+# Sample setup for jetty
+
+# server_type: jetty
+# app_root: /var/lib/jetty
+# jvm_conf_file: /usr/local/jetty/bin/jetty.sh
+
+# agent_user: jetty
+# agent_group: jetty
