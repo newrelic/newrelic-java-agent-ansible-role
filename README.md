@@ -59,6 +59,6 @@ The service name under which the web server runs; used by ansible to restart the
 
 The `examples/install_agent.yml` file, along with `examples/inventory.yml`, provide an example of how to use the role.
 
-1: https://docs.newrelic.com/docs/agents/manage-apm-agents/app-naming/name-your-application
-2: https://docs.newrelic.com/docs/agents/java-agent/configuration/java-agent-configuration-config-file#cfg-proxy_host
-3: https://docs.newrelic.com/docs/agents/java-agent
+[1]: https://docs.newrelic.com/docs/agents/manage-apm-agents/app-naming/name-your-application
+[2]: https://docs.newrelic.com/docs/agents/java-agent/configuration/java-agent-configuration-config-file#cfg-proxy_host
+[3]: https://docs.newrelic.com/docs/agents/java-agent
