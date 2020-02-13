@@ -58,9 +58,20 @@ The service name under which the web server runs; used by ansible to restart the
 
 If staging is set to true, the agent will use New Relic's internal staging collector. This option is only available for use at New Relic.
 
-## Example usage
+## Installation and example usage
 
-The `examples/install_agent.yml` file, along with `examples/inventory.yml`, provide an example of how to use the role.
+NOTE: this role is not yet available on Ansible Galaxy. To install the role locally run this command:
+
+```Shell
+$ sh examples/install_role.sh
+```
+
+The `examples/install_agent.yml` file, along with `examples/inventory.yml`, provide an example of how to use the role. After setting up your variables in `examples/install_agent.yml` and your inventory in `examples/inventory.yml` you can try the role out like this:
+
+```Shell
+$ ansible-playbook -i examples/inventory.yml examples/install_agent.yml
+```
+
 
 [1]: https://docs.newrelic.com/docs/agents/manage-apm-agents/app-naming/name-your-application
 [2]: https://docs.newrelic.com/docs/agents/java-agent/configuration/java-agent-configuration-config-file#cfg-proxy_host
