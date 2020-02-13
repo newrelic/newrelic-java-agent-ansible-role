@@ -4,4 +4,4 @@
     name: "{{ service_name }}"
     state: restarted
   become: yes
-  when: restart_web_server|bool
+  when: restart_web_server|default(true)|bool

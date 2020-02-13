@@ -5,7 +5,10 @@
 agent_download_url: https://download.newrelic.com/newrelic/java-agent/newrelic-agent
 agent_version: current
 
-restart_web_server: false
+# By default the web server will be restarted after configuration.
+# Set this to false if you want to restart it manually.
+#
+# restart_web_server: true
 
 agent_config:
   license_key: YOUR_LICENSE_KEY
@@ -23,8 +26,8 @@ server_type: tomcat
 app_root: /var/lib/tomcat8
 jvm_conf_file: /usr/share/tomcat8/bin/setenv.sh
 
-agent_user: tomcat8
-agent_group: tomcat8
+server_user: tomcat8
+server_group: tomcat8
 
 service_name: tomcat8
 
@@ -34,6 +37,6 @@ service_name: tomcat8
 # app_root: /var/lib/jetty
 # jvm_conf_file: /usr/local/jetty/bin/jetty.sh
 
-# agent_user: jetty
-# agent_group: jetty
+# server_user: jetty
+# server_group: jetty
 # service_name: jetty

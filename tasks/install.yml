@@ -3,8 +3,8 @@
   file:
     path: "{{ app_root }}/newrelic"
     state: directory
-    owner: "{{ agent_user }}"
-    group: "{{ agent_group }}"
+    owner: "{{ server_user }}"
+    group: "{{ server_group }}"
   become: yes
 
 - name: Download the agent and unzip it into place
@@ -14,8 +14,8 @@
     dest: "{{ app_root }}"
     mode: "0755"
     list_files: yes
-    owner: "{{ agent_user }}"
-    group: "{{ agent_group }}"
+    owner: "{{ server_user }}"
+    group: "{{ server_group }}"
   become: yes
   tags:
     - new-relic
@@ -24,8 +24,8 @@
   template:
     src: "templates/newrelic.yml.j2"
     dest: "{{ app_root }}/newrelic/newrelic.yml"
-    owner: "{{ agent_user }}"
-    group: "{{ agent_group }}"
+    owner: "{{ server_user }}"
+    group: "{{ server_group }}"
     mode: "0640"
   become: yes
   tags:
