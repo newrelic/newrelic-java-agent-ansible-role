@@ -14,7 +14,7 @@ common: &default_settings
   # license_key: '12345'
   # The key binds your Agent's data to your account in the New Relic service.
   license_key: '{{ nr_agent_config.license_key }}'
-{% if nr_agent_config.staging is defined %}
+{% if nr_agent_config.staging | default(false) | bool %}
   host: staging-collector.newrelic.com
 {% endif %}
 

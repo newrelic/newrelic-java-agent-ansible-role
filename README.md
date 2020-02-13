@@ -54,6 +54,9 @@ If defined to false, the role will _not_ restart the web server after installing
 
 The service name under which the web server runs; used by ansible to restart the web server after the agent is installed.
 
+#### staging (NEW RELIC INTERNAL USE ONLY)
+
+If staging is set to true, the agent will use New Relic's internal staging collector. This option is only available for use at New Relic.
 
 ## Example usage
 
