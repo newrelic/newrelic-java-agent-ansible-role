@@ -1,8 +1,0 @@
-- hosts: tomcat
-  vars:
-    nr_agent_config:
-      license_key: YOUR_LICENSE_KEY
-      app_name: Your App Name
-  tasks:
-   - include_role:
-       name: newrelic_java_agent

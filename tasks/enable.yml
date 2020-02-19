@@ -13,33 +13,9 @@
 - name: Jetty -javaagent setup
   lineinfile:
     dest: "{{ jvm_conf_file }}"
-    line: export JAVA_OPTIONS="${JAVA_OPTIONS} -javaagent:{{ app_root }}/newrelic/newrelic.jar"
-    create: yes
-    mode: 0755
+    line: JAVA_OPTIONS="$JAVA_OPTIONS -javaagent:{{ app_root }}/newrelic/newrelic.jar"
+    create: no
   when: server_type == "jetty"
-  become: yes
-  notify:
-    - restart web server
-
-# FIXME: finish these
-- name: Wildfly standalone mode -javaagent setup
-  lineinfile:
-    dest: "{{ jvm_conf_file }}"
-    line: blahhhhhhhhhhhhhhhhh 
-    create: yes
-    mode: 0755
-  when: server_type == "wildfly standalone"
-  become: yes
-  notify:
-    - restart web server
-
-- name: Wildfly domain mode -javaagent setup
-  blockinfile:
-    dest: "{{ jvm_conf_file }}"
-    line: blahhhhhhhhhhhhhhhhh
-    create: yes
-    mode: 0755
-  when: server_type == "wildfly domain"
   become: yes
   notify:
     - restart web server

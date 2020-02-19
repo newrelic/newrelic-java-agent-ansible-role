@@ -32,7 +32,7 @@ Other variables are used to control the installation of the agent.
 
 #### server_type (REQUIRED)
 
-The web server used by your application. Tomcat is supported out of the box; Jetty support is present but not yet tested.
+The web server used by your application. Tomcat and Jetty are supported out of the box.
 
 #### app_root (REQUIRED)
 

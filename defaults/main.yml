@@ -34,8 +34,8 @@ service_name: tomcat8
 # Sample setup for jetty
 
 # server_type: jetty
-# app_root: /var/lib/jetty
-# jvm_conf_file: /usr/local/jetty/bin/jetty.sh
+# app_root: /opt/web/mybase
+# jvm_conf_file: /etc/default/jetty
 
 # server_user: jetty
 # server_group: jetty

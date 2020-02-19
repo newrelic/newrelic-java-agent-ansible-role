@@ -1,0 +1,18 @@
+- hosts: jetty
+  vars:
+    nr_agent_config:
+      license_key: YOUR_LICENSE_KEY
+      app_name: Ansible role testing - jetty
+      staging: true
+
+    server_type: jetty
+    app_root: /opt/web/mybase
+    jvm_conf_file: /etc/default/jetty
+    server_user: jetty
+    server_group: jetty
+    service_name: jetty
+    restart_web_server: true
+
+  tasks:
+   - include_role:
+       name: newrelic_java_agent
