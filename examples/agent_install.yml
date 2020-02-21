@@ -2,15 +2,15 @@
   vars:
     nr_agent_config:
       license_key: YOUR_LICENSE_KEY
-      app_name: Ansible role testing - jetty
+      app_name: Ansible role testing - wildfly
       staging: true
 
-    server_type: jetty
-    app_root: /opt/web/mybase
-    jvm_conf_file: /etc/default/jetty
-    server_user: jetty
-    server_group: jetty
-    service_name: jetty
+    server_type: wildfly
+    app_root: /opt/wildfly/wildfly-18.0.1.Final
+    jvm_conf_file: "{{ app_root }}/bin/standalone.conf"
+    server_user: wildfly
+    server_group: wildfly
+    service_name: wildfly
     restart_web_server: true
 
   tasks:

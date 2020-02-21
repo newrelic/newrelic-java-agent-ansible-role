@@ -3,7 +3,7 @@
   lineinfile:
     dest: "{{ jvm_conf_file }}"
     line: export JAVA_OPTS="$JAVA_OPTS -javaagent:{{ app_root }}/newrelic/newrelic.jar"
-    create: yes
+    create: yes # the file often doesn't exist with Tomcat
     mode: 0755
   when: server_type == "tomcat"
   become: yes
@@ -16,6 +16,16 @@
     line: JAVA_OPTIONS="$JAVA_OPTIONS -javaagent:{{ app_root }}/newrelic/newrelic.jar"
     create: no
   when: server_type == "jetty"
+  become: yes
+  notify:
+    - restart web server
+
+- name: Wildfly standalone -javaagent setup
+  lineinfile:
+    dest: "{{ jvm_conf_file }}"
+    line: JAVA_OPTS="$JAVA_OPTS -javaagent:{{ app_root }}/newrelic/newrelic.jar"
+    create: no
+  when: server_type == "wildfly"
   become: yes
   notify:
     - restart web server
