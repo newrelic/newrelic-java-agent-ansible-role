@@ -1,4 +1,4 @@
-- hosts: jetty
+- hosts: java
   vars:
     nr_agent_config:
       license_key: YOUR_LICENSE_KEY
