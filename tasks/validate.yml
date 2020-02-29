@@ -1,0 +1,14 @@
+---
+- name: validate Jetty jvm conf file exists
+  when: server_type == "jetty"
+  block:
+    - name: check jvm conf file existence
+      stat:
+        path: "{{ jvm_conf_file }}"
+      register: jvm_conf
+    - name: fail if jvm conf file does not exist
+      fail:
+        msg: For Jetty installation the jvm conf file {{ jvm_conf_file }} should already exist
+      when: jvm_conf.stat.exists == false
+
+# Currently there is no validation for the other server_type settings
