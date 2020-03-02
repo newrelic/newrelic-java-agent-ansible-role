@@ -66,10 +66,10 @@ NOTE: this role is not yet available on Ansible Galaxy. To install the role loca
 $ sh examples/install_role.sh
 ```
 
-The `examples/install_agent.yml` file, along with `examples/inventory.yml`, provide an example of how to use the role. After setting up your variables in `examples/install_agent.yml` and your inventory in `examples/inventory.yml` you can try the role out like this:
+The `examples/agent_install.yml` file, along with `examples/inventory.yml`, provide an example of how to use the role. After setting up your variables in `examples/agent_install.yml` and your inventory in `examples/inventory.yml` you can try the role out like this:
 
 ```Shell
-$ ansible-playbook -i examples/inventory.yml examples/install_agent.yml
+$ ansible-playbook -i examples/inventory.yml examples/agent_install.yml
 ```
 
 
