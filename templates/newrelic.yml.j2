@@ -13,15 +13,12 @@ common: &default_settings
   # account. For example, if your license key is 12345 use this:
   # license_key: '12345'
   # The key binds your Agent's data to your account in the New Relic service.
-  license_key: '{{ nr_agent_config.license_key }}'
-{% if nr_agent_config.staging | default(false) | bool %}
-  host: staging-collector.newrelic.com
-{% endif %}
+  license_key: {{ nr_java_agent_config.license_key | mandatory }}
 
   # Agent Enabled
   # Use this setting to disable the agent instead of removing it from the startup command.
   # Default is true.
-  agent_enabled: true
+  agent_enabled: {{ nr_java_agent_config.agent_enabled | default(True) }}
 
   # Set the name of your application as you'd like it show up in New Relic.
   # If enable_auto_app_naming is false, the agent reports all data to this application.
@@ -32,12 +29,12 @@ common: &default_settings
   # app_name: My Application;My Application 2
   # This setting is required. Up to 3 different application names can be specified.
   # The first application name must be unique.
-  app_name: {{ nr_agent_config.app_name }}
+  app_name: {{ nr_java_agent_config.app_name | mandatory }}
 
   # To enable high security, set this property to true. When in high
   # security mode, the agent will use SSL and obfuscated SQL. Additionally,
   # request parameters and message parameters will not be sent to New Relic.
-  high_security: false
+  high_security: {{ nr_java_agent_config.high_security | default(False) }}
 
   # Set to true to enable support for auto app naming.
   # The name of each web app is detected automatically
@@ -45,12 +42,12 @@ common: &default_settings
   # This provides a finer-grained performance breakdown for
   # web apps in New Relic.
   # Default is false.
-  enable_auto_app_naming: false
+  enable_auto_app_naming: {{ nr_java_agent_config.enable_auto_app_naming | default(False) }}
 
   # Set to true to enable component-based transaction naming.
   # Set to false to use the URI of a web request as the name of the transaction.
   # Default is true.
-  enable_auto_transaction_naming: true
+  enable_auto_transaction_naming: {{ nr_java_agent_config.enable_auto_transaction_naming | default(True) }}
 
   # The agent uses its own log file to keep its logging
   # separate from that of your application.  Specify the log level here.
@@ -58,29 +55,29 @@ common: &default_settings
   # The levels in increasing order of verboseness are:
   #   off, severe, warning, info, fine, finer, finest
   # Default is info.
-  log_level: info
+  log_level: {{ nr_java_agent_config.log_level | default('info') }}
 
   # Log all data sent to and from New Relic in plain text.
   # This setting is dynamic, so changes do not require restarting your application.
   # Default is false.
-  audit_mode: false
+  audit_mode: {{ nr_java_agent_config.audit_mode | default(False) }}
 
   # The number of backup log files to save.
   # Default is 1.
-  log_file_count: 1
+  log_file_count: {{ nr_java_agent_config.log_file_count | default(1) }}
 
   # The maximum number of kbytes to write to any one log file.
   # The log_file_count must be set greater than 1.
   # Default is 0 (no limit).
-  log_limit_in_kbytes: 0
+  log_limit_in_kbytes: {{ nr_java_agent_config.log_limit_in_kbytes | default(0) }}
 
   # Override other log rolling configuration and roll the logs daily.
   # Default is false.
-  log_daily: false
+  log_daily: {{ nr_java_agent_config.log_daily | default(False) }}
 
   # The name of the log file.
   # Default is newrelic_agent.log.
-  log_file_name: newrelic_agent.log
+  log_file_name: {{ nr_java_agent_config.log_file_name | default('newrelic_agent.log') }}
 
   # The log file directory.
   # Default is the logs directory in the newrelic.jar parent directory.
@@ -97,43 +94,24 @@ common: &default_settings
   #proxy_user: username
   #proxy_password: password
   #proxy_scheme: https
-  {% if nr_agent_config.proxy_host is defined %}
-  proxy_host: {{ nr_agent_config.proxy_host }}
-  {% endif %}
-  {% if nr_agent_config.proxy_port is defined %}
-  proxy_port: {{ nr_agent_config.proxy_port }}
-  {% endif %}
-  {% if nr_agent_config.proxy_user is defined %}
-  proxy_user: {{ nr_agent_config.proxy_user }}
-  {% endif %}
-  {% if nr_agent_config.proxy_password is defined %}
-  proxy_password: {{ nr_agent_config.proxy_password }}
-  {% endif %}
-  {% if nr_agent_config.proxy_scheme is defined %}
-  proxy_scheme: {{ nr_agent_config.proxy_scheme }}
-  {% endif %}
-
 
   # Limits the number of lines to capture for each stack trace. 
   # Default is 30
-  max_stack_trace_lines: 30
+  max_stack_trace_lines: {{ nr_java_agent_config.max_stack_trace_lines | default(30) }}
 
   # Provides the ability to configure the attributes sent to New Relic. These
   # attributes can be found in transaction traces, traced errors, Insight's 
   # transaction events, and Insight's page views.
   attributes:
-  
     # When true, attributes will be sent to New Relic. The default is true.
-    enabled: true
-    
+    enabled: {{ nr_java_agent_config.attributes.enabled | default(True) }}
+
     #A comma separated list of attribute keys whose values should 
     # be sent to New Relic.
     #include:
-    
     # A comma separated list of attribute keys whose values should 
     # not be sent to New Relic.
     #exclude:
-    
 
   # Transaction tracer captures deep information about slow
   # transactions and sends this to the New Relic service once a
@@ -144,7 +122,7 @@ common: &default_settings
     # Transaction tracer is enabled by default. Set this to false to turn it off.
     # This feature is not available to Lite accounts and is automatically disabled.
     # Default is true.
-    enabled: true
+    enabled: {{ nr_java_agent_config.transaction_tracer.enabled | default(True) }}
 
     # Threshold in seconds for when to collect a transaction
     # trace. When the response time of a controller action exceeds
@@ -153,42 +131,42 @@ common: &default_settings
     # which will use the threshold for the "Frustrated" Apdex level
     # (greater than four times the apdex_t value).
     # Default is apdex_f.
-    transaction_threshold: apdex_f
+    transaction_threshold: {{ nr_java_agent_config.transaction_tracer.transaction_threshold | default('apdex_f') }}
 
     # When transaction tracer is on, SQL statements can optionally be
     # recorded. The recorder has three modes, "off" which sends no
     # SQL, "raw" which sends the SQL statement in its original form,
     # and "obfuscated", which strips out numeric and string literals.
     # Default is obfuscated.
-    record_sql: obfuscated
+    record_sql: {{ nr_java_agent_config.transaction_tracer.record_sql | default('obfuscated') }}
 
     # Set this to true to log SQL statements instead of recording them.
     # SQL is logged using the record_sql mode.
     # Default is false.
-    log_sql: false
+    log_sql: {{ nr_java_agent_config.transaction_tracer.log_sql | default(False) }}
 
     # Threshold in seconds for when to collect stack trace for a SQL
     # call. In other words, when SQL statements exceed this threshold,
     # then capture and send to New Relic the current stack trace. This is
     # helpful for pinpointing where long SQL calls originate from.
     # Default is 0.5 seconds.
-    stack_trace_threshold: 0.5
+    stack_trace_threshold: {{ nr_java_agent_config.transaction_tracer.stack_trace_threshold | default(0.5) }}
 
     # Determines whether the agent will capture query plans for slow
     # SQL queries. Only supported for MySQL and PostgreSQL.
     # Default is true.
-    explain_enabled: true
+    explain_enabled: {{ nr_java_agent_config.transaction_tracer.explain_enabled | default(True) }}
 
     # Threshold for query execution time below which query plans will not 
     # not be captured.  Relevant only when `explain_enabled` is true.
     # Default is 0.5 seconds.
-    explain_threshold: 0.5
+    explain_threshold: {{ nr_java_agent_config.transaction_tracer.explain_threshold | default(0.5) }}
 
     # Use this setting to control the variety of transaction traces.
     # The higher the setting, the greater the variety.
     # Set this to 0 to always report the slowest transaction trace.
     # Default is 20.
-    top_n: 20
+    top_n: {{ nr_java_agent_config.transaction_tracer.top_n | default(20) }}
 
   # Error collector captures information about uncaught exceptions and
   # sends them to New Relic for viewing.
@@ -197,19 +175,19 @@ common: &default_settings
     # This property enables the collection of errors. If the property is not
     # set or the property is set to false, then errors will not be collected.
     # Default is true.
-    enabled: true
+    enabled: {{ nr_java_agent_config.error_collector.enabled | default(True) }}
 
     # Use this property to exclude specific exceptions from being reported as errors
     # by providing a comma separated list of full class names.
     # The default is to exclude akka.actor.ActorKilledException. If you want to override
     # this, you must provide any new value as an empty list is ignored.
-    ignore_errors: akka.actor.ActorKilledException
+    ignore_errors: {{ nr_java_agent_config.error_collector.ignore_errors | default('akka.actor.ActorKilledException') }}
 
     # Use this property to exclude specific http status codes from being reported as errors
     # by providing a comma separated list of status codes.
     # The default is to exclude 404s. If you want to override
     # this, you must provide any new value as an empty list is ignored.
-    ignore_status_codes: 404
+    ignore_status_codes: {{ nr_java_agent_config.error_collector.ignore_status_codes | default(404) }}
 
   # Transaction Events are used for Histograms and Percentiles. Unaggregated data is collected
   # for each web transaction and sent to the server on harvest. 
@@ -217,19 +195,19 @@ common: &default_settings
 
     # Set to false to disable transaction events.
     # Default is true.
-    enabled: true
+    enabled: {{ nr_java_agent_config.transaction_events.enabled | default(True) }}
 
     # Events are collected up to the configured amount. Afterwards, events are sampled to
     # maintain an even distribution across the harvest cycle.
     # Default is 2000.  Setting to 0 will disable.
-    max_samples_stored: 2000
+    max_samples_stored: {{ nr_java_agent_config.transaction_events.max_samples_stored | default(2000) }}
 
   # Distributed tracing lets you see the path that a request takes through your distributed system.
   # Enabling distributed tracing changes the behavior of some New Relic features, so carefully consult the transition
   # guide before you enable this feature: https://docs.newrelic.com/docs/transition-guide-distributed-tracing
   # Default is false.
   distributed_tracing:
-    enabled: false
+    enabled: {{ nr_java_agent_config.distributed_tracing.enabled | default(False) }}
 
   # Cross Application Tracing adds request and response headers to
   # external calls using supported HTTP libraries to provide better
@@ -238,7 +216,7 @@ common: &default_settings
 
     # Set to false to disable cross application tracing.
     # Default is true.
-    enabled: true
+    enabled: {{ nr_java_agent_config.cross_application_tracer.enabled | default(True) }}
 
   # Thread profiler measures wall clock time, CPU time, and method call counts
   # in your application's threads as they run.
@@ -247,7 +225,7 @@ common: &default_settings
 
     # Set to false to disable the thread profiler.
     # Default is true.
-    enabled: true
+    enabled: {{ nr_java_agent_config.thread_profiler.enabled | default(True) }}
 
   # New Relic Real User Monitoring gives you insight into the performance real users are
   # experiencing with your website. This is accomplished by measuring the time it takes for
@@ -260,7 +238,7 @@ common: &default_settings
     # See https://docs.newrelic.com/docs/java/real-user-monitoring-in-java#manual_instrumentation
     # for instructions to add these manually to your pages.
     # Set this attribute to false to turn off this behavior.
-    auto_instrument: true
+    auto_instrument: {{ nr_java_agent_config.browser_monitoring.auto_instrument | default(True) }}
 
   class_transformer:
     # This instrumentation reports the name of the user principal returned from 
@@ -289,7 +267,7 @@ common: &default_settings
   # User-configurable custom labels for this agent.  Labels are name-value pairs.
   # There is a maximum of 64 labels per agent.  Names and values are limited to 255 characters.
   # Names and values may not contain colons (:) or semicolons (;).
-  labels:
+  labels: {{ nr_java_agent_config.labels | default(None) }}
 
     # An example label
     #label_name: label_value
@@ -309,15 +287,16 @@ common: &default_settings
 
 development:
   <<: *default_settings
-  app_name: {{ nr_agent_config.app_name }} (Development)
+  app_name: {{ nr_java_agent_config.app_name }} (Development)
 
 test:
   <<: *default_settings
-  app_name: {{ nr_agent_config.app_name }} (Test)
+  app_name: {{ nr_java_agent_config.app_name }} (Test)
 
 production:
   <<: *default_settings
 
 staging:
   <<: *default_settings
-  app_name: {{ nr_agent_config.app_name }} (Staging)
+  app_name: {{ nr_java_agent_config.app_name }} (Staging)
+

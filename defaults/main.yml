@@ -1,42 +1,24 @@
 ---
+# Agent config template - merged with user-supplied config
+nr_java_agent_default_config:
+  attributes:
+  transaction_tracer:
+  error_collector:
+  transaction_events:
+  distributed_tracing:
+  cross_application_tracer:
+  thread_profiler:
+  browser_monitoring:
+  labels:
 
-# Server-agnostic configuration
+# By default the role will download directly from New Relic.
+# Set nr_java_agent_version to get a specific version of the agent,
+# eg 5.9.0.
 
-agent_download_url: https://download.newrelic.com/newrelic/java-agent/newrelic-agent
-agent_version: current
+nr_java_agent_version: current
 
-# By default the web server will be restarted after configuration.
-# Set this to false if you want to restart it manually.
-#
-# restart_web_server: true
+# If you host the agent zip file on your servers, you can override
+# nr_java_agent_download_url with the full URL of the file.
 
-agent_config:
-  license_key: YOUR_LICENSE_KEY
-  app_name: Your App Name
-  # Example for proxy
-  # proxy_host: proxy.example.com
-  # proxy_port: 4321
-  # proxy_user: <proxy username>
-  # proxy_password: <proxy password>
-  # proxy_scheme: https
+nr_java_agent_download_url: "https://download.newrelic.com/newrelic/java-agent/newrelic-agent/{{ nr_java_agent_version }}/newrelic-java.zip"
 
-# Default setup is for tomcat
-
-server_type: tomcat
-app_root: /var/lib/tomcat8
-jvm_conf_file: /usr/share/tomcat8/bin/setenv.sh
-
-server_user: tomcat8
-server_group: tomcat8
-
-service_name: tomcat8
-
-# Sample setup for jetty
-
-# server_type: jetty
-# app_root: /opt/web/mybase
-# jvm_conf_file: /etc/default/jetty
-
-# server_user: jetty
-# server_group: jetty
-# service_name: jetty

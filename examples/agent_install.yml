@@ -1,16 +1,15 @@
 - hosts: java
   vars:
-    nr_agent_config:
+    nr_java_agent_config:
       license_key: YOUR_LICENSE_KEY
-      app_name: Ansible role testing - wildfly
-      staging: true
+      app_name: Your App Name
 
-    server_type: wildfly
-    app_root: /opt/wildfly/wildfly-18.0.1.Final
-    jvm_conf_file: "{{ app_root }}/bin/standalone.conf"
-    server_user: wildfly
-    server_group: wildfly
-    service_name: wildfly
+    server_type: tomcat
+    server_root: /var/lib/tomcat8
+    jvm_conf_file: /usr/share/tomcat8/bin/setenv.sh
+    server_user: tomcat8
+    server_group: tomcat8
+    service_name: tomcat8
     restart_web_server: true
 
   tasks:

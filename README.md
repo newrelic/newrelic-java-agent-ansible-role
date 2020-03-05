@@ -12,7 +12,7 @@ Requires unzip to be available on the target hosts.
 
 ### Agent configuration
 
-Configuration specific to the agent goes in the `nr_agent_config` dictionary.
+Configuration specific to the agent goes in the `nr_java_agent_config` dictionary.
 
 #### license_key (REQUIRED)
 
@@ -34,7 +34,7 @@ Other variables are used to control the installation of the agent.
 
 The web server used by your application. Tomcat and Jetty are supported out of the box.
 
-#### app_root (REQUIRED)
+#### server_root (REQUIRED)
 
 The location of the web server on the host; the agent's jar, configuration, and log files will live in a subdirectory of this directory.
 
