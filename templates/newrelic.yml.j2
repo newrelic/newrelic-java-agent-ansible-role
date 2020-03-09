@@ -81,7 +81,12 @@ common: &default_settings
 
   # The log file directory.
   # Default is the logs directory in the newrelic.jar parent directory.
+
+  {% if nr_java_agent_config.log_file_path is defined %}
+  log_file_path: {{ nr_java_agent_config.log_file_path }}
+  {% else %}
   #log_file_path:
+  {% endif %}
 
   # Proxy settings for connecting to the New Relic server:
   # If a proxy is used, the host setting is required.  Other settings
@@ -89,11 +94,31 @@ common: &default_settings
   # settings will be used to authenticate to Basic Auth challenges
   # from a proxy server. Proxy scheme will allow the agent to
   # connect through proxies using the HTTPS scheme.
+  {% if nr_java_agent_config.proxy_host is defined %}
+  proxy_host: {{ nr_java_agent_config.proxy_host }}
+  {% else %}
   #proxy_host: hostname
+  {% endif %}
+  {% if nr_java_agent_config.proxy_port is defined %}
+  proxy_port: {{ nr_java_agent_config.proxy_port }}
+  {% else %}
   #proxy_port: 8080
+  {% endif %}
+  {% if nr_java_agent_config.proxy_user is defined %}
+  proxy_user: {{ nr_java_agent_config.proxy_user }}
+  {% else %}
   #proxy_user: username
+  {% endif %}
+  {% if nr_java_agent_config.proxy_password is defined %}
+  proxy_password: {{ nr_java_agent_config.proxy_password }}
+  {% else %}
   #proxy_password: password
+  {% endif %}
+  {% if nr_java_agent_config.proxy_scheme is defined %}
+  proxy_scheme: {{ nr_java_agent_config.proxy_scheme }}
+  {% else %}
   #proxy_scheme: https
+  {% endif %}
 
   # Limits the number of lines to capture for each stack trace. 
   # Default is 30
@@ -108,10 +133,18 @@ common: &default_settings
 
     #A comma separated list of attribute keys whose values should 
     # be sent to New Relic.
+    {% if nr_java_agent_config.attributes.include is defined %}
+    include: {{ nr_java_agent_config.attributes.include }}
+    {% else %}
     #include:
+    {% endif %}
     # A comma separated list of attribute keys whose values should 
     # not be sent to New Relic.
+    {% if nr_java_agent_config.attributes.exclude is defined %}
+    exclude: {{ nr_java_agent_config.attributes.exclude }}
+    {% else %}
     #exclude:
+    {% endif %}
 
   # Transaction tracer captures deep information about slow
   # transactions and sends this to the New Relic service once a
@@ -271,6 +304,10 @@ common: &default_settings
 
     # An example label
     #label_name: label_value
+
+  {% if nr_java_agent_config.collector_host is defined %}
+  host: {{ nr_java_agent_config.collector_host }}
+  {% endif %}
 
 
 # Application Environments

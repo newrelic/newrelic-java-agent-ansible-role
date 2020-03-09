@@ -1,5 +1,10 @@
 ---
-# Agent config template - merged with user-supplied config
+# NOTE: if you want to change any of these values, set them
+# in your inventory file or playbook.
+
+# Agent config template - merged with user-supplied config from
+# the nr_java_agent_config dictionary.
+# Do not change this variable!
 nr_java_agent_default_config:
   attributes:
   transaction_tracer:
@@ -11,14 +16,39 @@ nr_java_agent_default_config:
   browser_monitoring:
   labels:
 
-# By default the role will download directly from New Relic.
+# By default the agent zip file will download directly from New Relic.
 # Set nr_java_agent_version to get a specific version of the agent,
-# eg 5.9.0.
+# eg 5.10.0.
 
 nr_java_agent_version: current
 
-# If you host the agent zip file on your servers, you can override
-# nr_java_agent_download_url with the full URL of the file.
+# If you host the agent zip file for download on your servers, you can
+# override nr_java_agent_zip_location with the full URL of the file.
+# You can use nr_java_agent_version as in the default below or not,
+# depending on your needs.
 
-nr_java_agent_download_url: "https://download.newrelic.com/newrelic/java-agent/newrelic-agent/{{ nr_java_agent_version }}/newrelic-java.zip"
+nr_java_agent_zip_location: "https://download.newrelic.com/newrelic/java-agent/newrelic-agent/{{ nr_java_agent_version }}/newrelic-java.zip"
+nr_java_agent_zip_is_remote: true
+
+# Instead of downloading the agent zip file from our servers or
+# yours, you can use an already-downloaded file by setting
+# nr_java_agent_download_url to a filesystem path.
+#
+# Set nr_java_agent_zip_path_is_remote to true to use files that
+# already exist on the the target hosts, or false to use a file
+# on the host on which Ansible is running.
+#
+# nr_java_agent_zip_location: /path/to/playbook/files/newrelic-java.zip
+# nr_java_agent_zip_is_remote: false
+
+# If you want to specify a pre-configured newrelic.yml file
+# for the agent to use, set nr_java_agent_config_file to the path
+# to the file.
+#
+# nr_java_agent_config_file: /path/to/newrelic.yml
+#
+# If the config file is located on the remote hosts instead of
+# the system running ansible, set nr_java_agent_config_file_is_remote
+# to true:
+# nr_java_agent_config_file_is_remote: true
 

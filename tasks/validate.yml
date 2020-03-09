@@ -11,4 +11,26 @@
         msg: For Jetty installation the jvm conf file {{ jvm_conf_file }} should already exist
       when: jvm_conf.stat.exists == false
 
-# Currently there is no validation for the other server_type settings
+- name: Validate local config file exists, if provided
+  when: nr_java_agent_config_file is defined and not (nr_java_agent_config_file_is_remote is defined | default(false))
+  block:
+    - name: Check supplied local config file existence
+      local_action: stat path="{{ nr_java_agent_config_file }}"
+      register: agent_conf
+    - name: Fail if supplied local config file does not exist
+      fail:
+        msg: Config file specified at {{ nr_java_agent_config_file }} does not exist on the local host
+      when: agent_conf.stat.exists == false
+
+- name: Validate remote config file exists, if provided
+  when: nr_java_agent_config_file is defined and (nr_java_agent_config_file_is_remote is defined and nr_java_agent_config_file_is_remote | default(false))
+  block:
+    - name: Check supplied remote config file existence
+      stat:
+        path: "{{ nr_java_agent_config_file }}"
+      register: agent_conf
+    - name: Fail if supplied remote config file does not exist
+      fail:
+        msg: Config file specified at {{ nr_java_agent_config_file }} does not exist on the remote host
+      when: agent_conf.stat.exists == false
+

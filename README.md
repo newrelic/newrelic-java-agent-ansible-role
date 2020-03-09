@@ -2,17 +2,17 @@
 
 ## Description
 
-This role installs and configures the [New Relic Java agent][3]. It should work with minimal configuration for applications running under Tomcat. Our aim is to support many of the most popular Java web servers over time.
+This role installs and configures the [New Relic Java agent][3]. It should work with minimal configuration for applications running under Tomcat, Jetty or Wildfly. Our aim is to support the most popular Java web servers over time.
 
 ## Requirements
 
-Requires unzip to be available on the target hosts.
+This role requires the `unzip` command to be available on the target hosts.
 
 ## Role Variables
 
 ### Agent configuration
 
-Configuration specific to the agent goes in the `nr_java_agent_config` dictionary.
+Configuration specific to the agent goes in the `nr_java_agent_config` dictionary and will be added to the Java agent's config file - `newrelic.yml` - by template. The most commonly-used settings can be specified through this role - some examples can be found in `examples/agent_config.yml`. However, if you need to configure settings that aren't listed below, you'll need to provide your own, preconfigured `newrelic.yml` file - see [Using your own agent config file](#Using-your-own-agent-config-file) below for details.
 
 #### license_key (REQUIRED)
 
@@ -24,7 +24,43 @@ The name of the application being instrumented. See the [documentation on app na
 
 #### proxy_host, proxy_port, proxy_user, proxy_password, proxy_scheme (OPTIONAL)
 
-If you connect to the New Relic collector via a proxy, you can configure that with these values. See [the documentation on configuring the Java agent][2] for more details.
+If you connect to the New Relic collector via a proxy, you can configure your proxy settings with these values. See [the documentation on configuring the Java agent][2] for more details.
+
+#### labels
+User-configurable custom labels for this agent. Labels are name-value pairs. Names and values are limited to 255 characters and may not contain colons (:) or semicolons (;). The value of this setting should be a semicolon-separated list of key:value pairs, eg:
+
+```yaml
+nr_java_agent_config:
+  ...
+  labels: Server:One;Data Center:Primary
+```
+
+#### Other agent-specific configuration
+
+Besides the above settings, you can configure the following settings through this Ansible role:
+
+* agent_enabled
+* high_security
+* enable_auto_app_naming
+* log_level
+* audit_mode
+* log_file_count
+* log_limit_in_kbytes
+* log_daily
+* log_file_name
+* log_file_path
+* max_stack_trace_lines
+* attributes: enabled, include, exclude
+* transaction_tracer: enabled, transaction_threshold, record_sql, log_sql, stack_trace_threshold, explain_enabled, explain_threshold, top_n
+* error_collector: enabled, ignore_errors, ignore_status_codes
+* transaction_events: enabled, max_samples_stored
+* distributed_tracing: enabled
+* cross_application_tracer: enabled
+* thread_profiler: enabled
+* browser_monitoring: auto_instrument
+* labels
+
+See the [Java agent configuration documentation][4] for more details on these settings and others. If you need to configure settings besides these, you'll need to provide a fully-specified `newrelic.yml`. See the [Using your own agent config file](#Using-your-own-agent-config-file) section for details.
 
 ### Role configuration
 
@@ -54,17 +90,33 @@ If defined to false, the role will _not_ restart the web server after installing
 
 The service name under which the web server runs; used by ansible to restart the web server after the agent is installed.
 
-#### staging (NEW RELIC INTERNAL USE ONLY)
+### Using your own agent config file
 
-If staging is set to true, the agent will use New Relic's internal staging collector. This option is only available for use at New Relic.
+If you need to specify settings beyond those listed above, you'll need to provide a fully-configured `newrelic.yml` file. Any settings in the `nr_java_agent_config` dictionary will be ignored. Set the variable `nr_java_agent_config_file` to the path to your file:
+
+```yaml
+nr_java_agent_config_file: /path/to/your_newrelic.yml
+```
+
+If this file is on the target hosts instead of on the system running Ansible, set `nr_java_agent_config_file_is_remote` to true:
+
+```yaml
+nr_java_agent_config_file_is_remote: true
+```
 
 ## Installation and example usage
+
+### Installation
 
 NOTE: this role is not yet available on Ansible Galaxy. To install the role locally run this command:
 
 ```Shell
 $ sh examples/install_role.sh
 ```
+
+Depending on how Ansible is installed on your system, you may need to preface the above command with `sudo`.
+
+### Example usage
 
 The `examples/agent_install.yml` file, along with `examples/inventory.yml`, provide an example of how to use the role. After setting up your variables in `examples/agent_install.yml` and your inventory in `examples/inventory.yml` you can try the role out like this:
 
@@ -76,3 +128,4 @@ $ ansible-playbook -i examples/inventory.yml examples/agent_install.yml
 [1]: https://docs.newrelic.com/docs/agents/manage-apm-agents/app-naming/name-your-application
 [2]: https://docs.newrelic.com/docs/agents/java-agent/configuration/java-agent-configuration-config-file#cfg-proxy_host
 [3]: https://docs.newrelic.com/docs/agents/java-agent
+[4]: https://docs.newrelic.com/docs/agents/java-agent/configuration/java-agent-configuration-config-file
