@@ -7,6 +7,30 @@
     group: "{{ server_group }}"
   become: yes
 
+- name: Copy provided Java agent config file into place
+  copy:
+    src: "{{ nr_java_agent_config_file }}"
+    remote_src: "{{ nr_java_agent_config_file_is_remote | default(false) }}"
+    dest: "{{ server_root }}/newrelic/newrelic.yml.new"
+    owner: "{{ server_user }}"
+    group: "{{ server_group }}"
+    mode: "0640"
+  become: yes
+  when: nr_java_agent_config_file is defined
+
+- name: Set up the Java agent config file from template
+  template:
+    src: "templates/newrelic.yml.j2"
+    dest: "{{ server_root }}/newrelic/newrelic.yml.new"
+    owner: "{{ server_user }}"
+    group: "{{ server_group }}"
+    mode: "0640"
+  become: yes
+  when: nr_java_agent_config_file is undefined
+
+- name: Back up existing config file if necessary
+  import_tasks: backup_config.yml
+
 - name: Acquire the agent zip file and unzip it into place
   unarchive:
     src: "{{ nr_java_agent_zip_location }}"
@@ -18,23 +42,18 @@
     group: "{{ server_group }}"
   become: yes
 
-- name: Copy provided Java agent config file into place
+- name: Copy new newrelic.yml into place
   copy:
-    src: "{{ nr_java_agent_config_file }}"
-    remote_src: "{{ nr_java_agent_config_file_is_remote | default(false) }}"
+    src: "{{ server_root }}/newrelic/newrelic.yml.new"
     dest: "{{ server_root }}/newrelic/newrelic.yml"
+    remote_src: true
+    mode: "0755"
     owner: "{{ server_user }}"
     group: "{{ server_group }}"
-    mode: "0640"
-  become: yes
-  when: nr_java_agent_config_file is defined
+  become: true
 
-- name: Set up the Java agent config file from template
-  template:
-    src: "templates/newrelic.yml.j2"
-    dest: "{{ server_root }}/newrelic/newrelic.yml"
-    owner: "{{ server_user }}"
-    group: "{{ server_group }}"
-    mode: "0640"
-  become: yes
-  when: nr_java_agent_config_file is undefined
+- name: Remove newrelic.yml.new
+  file:
+    path: "{{ server_root }}/newrelic/newrelic.yml.new"
+    state: absent
+  become: true
