@@ -66,6 +66,8 @@ The service name under which the web server runs; used by ansible to restart the
 
 Configuration specific to the agent goes in the `nr_java_agent_config` dictionary and will be added to the Java agent's config file - `newrelic.yml` - by template. The most commonly-used settings can be specified through this role - some examples can be found in `examples/agent_config.yml`. If you need to configure settings that aren't listed below, you'll need to provide your own, preconfigured `newrelic.yml` file - see [Using your own agent config file](#Using-your-own-agent-config-file) for details.
 
+You can specify agent configuration settings for specific hosts in your inventory using the `nr_java_agent_host_config` dictionary. See `examples/inventory.yml` for some examples. Values here will override those in `nr_java_agent_config`.
+
 #### license_key (REQUIRED)
 
 Your New Relic license key.

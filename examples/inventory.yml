@@ -1,3 +1,18 @@
-java:
+linux_java_servers: # host group
+  vars:
+    # Ansible configuration can go here
+    ansible_user: ubuntu
+    # Also configuration specific to this role, to apply to all hosts
+    server_type: tomcat
+
   hosts:
-    ansible_target:
+    java_server_one:
+      ansible_host: 127.0.40.1
+      # Host-specific agent configuration goes here
+      nr_java_agent_host_config:
+        # Overrides app_name set in playbook
+        app_name: Example App
+
+    java_server_two:
+      ansible_host: 127.0.40.2
+      # app_name set in playbook will be used

@@ -1,4 +1,4 @@
-- hosts: java
+- hosts: linux_java_servers
   vars:
     nr_java_agent_config:
       license_key: YOUR_LICENSE_KEY

@@ -3,6 +3,10 @@
   set_fact:
     nr_java_agent_config: "{{ nr_java_agent_default_config | combine(nr_java_agent_config, recursive=True) }}"
 
+- name: Merge host config
+  set_fact:
+    nr_java_agent_config: "{{ nr_java_agent_config | combine(nr_java_agent_host_config, recursive=True) }}"
+
 - name: Validate configuration
   import_tasks: validate.yml
 

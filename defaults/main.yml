@@ -16,6 +16,9 @@ nr_java_agent_default_config:
   browser_monitoring:
   labels:
 
+# Placeholder for host-specific configuration
+nr_java_agent_host_config: {}
+
 # By default the agent zip file will download directly from New Relic.
 # Set nr_java_agent_version to get a specific version of the agent,
 # eg 5.10.0.
