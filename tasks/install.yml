@@ -51,6 +51,8 @@
     owner: "{{ server_user }}"
     group: "{{ server_group }}"
   become: true
+  notify:
+    - restart web server
 
 - name: Remove newrelic.yml.new
   file:

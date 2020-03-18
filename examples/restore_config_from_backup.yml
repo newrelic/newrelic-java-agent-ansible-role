@@ -1,0 +1,11 @@
+- hosts: java
+  vars:
+    server_root: /var/lib/tomcat8
+    restore_from_original: true
+    restart_web_server: true
+    service_name: tomcat8
+
+  tasks:
+   - include_role:
+       name: newrelic_java_agent
+       tasks_from: restore_config
