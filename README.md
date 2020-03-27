@@ -118,7 +118,7 @@ See the [Java agent configuration documentation][4] for more details on these se
 
 ### Using your own agent config file
 
-If you need to specify agent configuration settings beyond those listed below, you'll need to provide your own `newrelic.yml` file. Any settings in the `nr_java_agent_config` dictionary will then be ignored. Set the variable `nr_java_agent_config_file` to the path to your file, for example:
+If you need to specify agent configuration settings beyond those listed above, you'll need to provide your own `newrelic.yml` file. Any settings in the `nr_java_agent_config` dictionary will then be ignored. Set the variable `nr_java_agent_config_file` to the path to your file, for example:
 
 ```yaml
 nr_java_agent_config_file: /path/to/your/newrelic.yml
