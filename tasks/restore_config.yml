@@ -1,12 +1,14 @@
 ---
 - name: choose backup file
   block:
-  - set_fact:
+  - name: restore from original
+    set_fact:
       backup_file_name: newrelic.yml.orig
-    when: restore_from_original == true
-  - set_fact:
+    when: restore_from_original
+  - name: restore from previous
+    set_fact:
       backup_file_name: newrelic.yml.prev
-    when: restore_from_original == false
+    when: not restore_from_original
 
 - name: check if requested backup file exists
   stat:
@@ -16,7 +18,7 @@
 
 - name: fail if requested backup file does not exist
   fail: "Cannot restore from {{ backup_file_name }}: file does not exist"
-  when: newrelic_yml_backup.stat.exists == false
+  when: not newrelic_yml_backup.stat.exists
 
 - name: restore config
   copy:

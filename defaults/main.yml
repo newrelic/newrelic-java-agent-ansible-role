@@ -54,4 +54,3 @@ nr_java_agent_zip_is_remote: true
 # the system running ansible, set nr_java_agent_config_file_is_remote
 # to true:
 # nr_java_agent_config_file_is_remote: true
-

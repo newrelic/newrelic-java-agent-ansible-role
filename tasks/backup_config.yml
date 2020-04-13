@@ -6,7 +6,7 @@
   become: true
 
 - name: Handle existing newrelic.yml
-  when: newrelic_yml.stat.exists == true
+  when: newrelic_yml.stat.exists
   block:
   - name: get stat for .new file
     stat:
@@ -34,7 +34,7 @@
   # original file if there was one. Just copy the current file to .prev,
   # if it's different from the new file.
   - name: Backup most recent newrelic.yml to newrelic.yml.prev
-    when: (newrelic_yml_prev.stat.exists == true or newrelic_yml_orig.stat.exists == true) and newrelic_yml_changed == true
+    when: (newrelic_yml_prev.stat.exists or newrelic_yml_orig.stat.exists) and newrelic_yml_changed
     copy:
       src: "{{ server_root }}/newrelic/newrelic.yml"
       dest: "{{ server_root }}/newrelic/newrelic.yml.prev"
@@ -47,7 +47,7 @@
   # If neither .prev nor .orig exists, we've never run before.
   # Copy the existing newrelic.yml to .orig no matter what.
   - name: Backup original newrelic.yml to newrelic.yml.orig
-    when: newrelic_yml_prev.stat.exists == false and newrelic_yml_orig.stat.exists == false
+    when: not newrelic_yml_prev.stat.exists and not newrelic_yml_orig.stat.exists
     copy:
       src: "{{ server_root }}/newrelic/newrelic.yml"
       dest: "{{ server_root }}/newrelic/newrelic.yml.orig"
