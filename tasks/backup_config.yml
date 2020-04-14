@@ -56,3 +56,7 @@
       group: "{{ server_group }}"
       mode: "0640"
     become: true
+    # This task is not idempotent on the first run, only on subsequent runs,
+    # so disable idempotence testing.
+    tags:
+      - molecule-idempotence-notest
