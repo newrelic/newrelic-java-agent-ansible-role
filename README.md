@@ -25,7 +25,7 @@ The recommended way to install the role is to use Ansible Galaxy:
 $ ansible-galaxy install newrelic.new_relic_java_agent
 ```
 
-If you want to contribute to the role, you can install it locally by running:
+If you want to contribute to the role, you can clone this repo and make changes to it, then install it locally by running:
 
 ```Shell
 sh examples/install_role.sh
