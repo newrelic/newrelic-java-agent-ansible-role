@@ -20,13 +20,17 @@ The `unzip` command must be available on the target hosts.
 
 ## <a name='Installation'></a>Installation
 
-To install the role locally, run:
+The recommended way to install the role is to use Ansible Galaxy:
+```Shell
+$ ansible-galaxy install newrelic.new_relic_java_agent
+```
+
+If you want to contribute to the role, you can install it locally by running:
 
 ```Shell
 sh examples/install_role.sh
 ```
 Depending on how Ansible is installed on your system, you may need to preface the above command with `sudo`.
-> NOTE: This role is not yet available on Ansible Galaxy. 
 
 ## <a name='Configuration'></a>Configuration
 
