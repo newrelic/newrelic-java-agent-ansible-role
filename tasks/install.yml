@@ -27,6 +27,7 @@
     mode: "0640"
   become: yes
   when: nr_java_agent_config_file is undefined
+  changed_when: False
 
 - name: Back up existing config file if necessary
   import_tasks: backup_config.yml
@@ -40,6 +41,8 @@
     list_files: yes
     owner: "{{ server_user }}"
     group: "{{ server_group }}"
+    exclude:
+      - newrelic/newrelic.yml
   become: yes
 
 - name: Copy new newrelic.yml into place
@@ -59,3 +62,4 @@
     path: "{{ server_root }}/newrelic/newrelic.yml.new"
     state: absent
   become: true
+  changed_when: False
