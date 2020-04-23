@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          path: test_role
+          path: newrelic-java-agent-ansible-role
 
       - name: Setup python
         uses: actions/setup-python@v1
@@ -33,7 +33,7 @@ jobs:
           ls
 
       - name: Run molecule test
-        working-directory: test_role
+        working-directory: newrelic-java-agent-ansible-role
         run: |
           molecule test
 
