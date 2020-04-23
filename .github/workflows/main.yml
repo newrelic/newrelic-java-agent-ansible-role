@@ -27,7 +27,13 @@ jobs:
           sudo apt install docker
           python3 -m pip install --upgrade pip
           python3 -m pip install molecule
+
+      - name: Debug a bit
+        run: |
+          ls
+
       - name: Run molecule test
+        working-directory: test_role
         run: |
           molecule test
 
