@@ -1,0 +1,28 @@
+name: Molecule Test
+
+on: [push, commit]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: test_role
+
+    - name: Setup python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.6
+
+    - name: Install dependencies
+      run: |
+        sudo apt install docker
+        python3 -m pip install --upgrade pip
+        python3 -m pip install molecule
+    - name: Run molecule test
+      run: |
+        molecule test
+
+
