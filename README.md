@@ -151,6 +151,31 @@ After setting up your variables in `examples/agent_install.yml` and your invento
 ansible-playbook -i examples/inventory.yml examples/agent_install.yml
 ```
 
+## <a name='Development'></a>Development
+
+### Testing
+
+This role uses [molecule](https://molecule.readthedocs.io/en/latest/) for testing. You'll need [Docker](https://www.docker.com/) and [Python](https://www.python.org) 3.6 or later. Install molecule with the docker module, if you haven't already:
+
+```shell
+$ pip install molecule[docker]
+```
+
+This will also install ansible, if necessary. To run the tests, call `molecule test` from the top level directory.
+
+```shell
+$ git clone https://github.com/newrelic/newrelic-java-agent-ansible-role
+$ cd newrelic-java-agent-ansible-role
+$ molecule test
+--> Test matrix
+
+└── default
+    ├── dependency
+    ├── lint
+    ├── cleanup
+...
+```
+
 ## <a name='Community'></a>Community
 
 New Relic hosts and moderates an online forum where customers can interact with New Relic employees as well as other customers to get help and share best practices. Like all official New Relic open source projects, there's a related Community topic in the New Relic Explorers Hub. You can find the project's topic/threads here:
