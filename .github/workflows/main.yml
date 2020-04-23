@@ -1,0 +1,36 @@
+name: Molecule Test
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: newrelic-java-agent-ansible-role
+
+      - name: Setup python
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.6
+
+      - name: Install dependencies
+        run: |
+          sudo apt install docker
+          python3 -m pip install --upgrade pip
+          python3 -m pip install molecule[docker]
+
+      - name: Run molecule test
+        working-directory: newrelic-java-agent-ansible-role
+        run: |
+          molecule test
+
+
