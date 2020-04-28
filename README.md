@@ -87,11 +87,11 @@ Your [New Relic license key](https://docs.newrelic.com/docs/accounts/install-new
 Name of the application being instrumented. For more details, see the [New Relic documentation on app naming][1].
 
 #### <a name='proxy_hostproxy_portproxy_userproxy_passwordproxy_scheme'></a>`proxy_host` / `proxy_port` / `proxy_user` / `proxy_password`, / `proxy_scheme`
-**Required**
+**Optional**
 If you connect to the New Relic collector via a proxy, you can configure your proxy settings with these values. For more details, see [the New Relic documentation on configuring the Java agent][2].
 
 #### <a name='labels'></a>`labels`
-**Required**
+**Optional**
 User-configurable custom labels for the agent. Labels are name-value pairs. Names and values are limited to 255 characters and cannot contain colons (`:`) nor semicolons (`;`). Value should be a semicolon-separated list of key-value pairs. For example:
 
 ```yaml
