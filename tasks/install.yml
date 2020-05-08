@@ -63,3 +63,22 @@
     state: absent
   become: true
   changed_when: False
+
+- name: put any custom instrumentation files in place
+  when: custom_instrumentation_files|default([])|length > 0
+  block:
+    - name: create extensions directory
+      file:
+        path: "{{ server_root }}/newrelic/extensions"
+       state: directory
+        owner: "{{ server_user }}"
+        group: "{{ server_group }}"
+      become: true
+    - name: copy files
+      copy:
+        src: "{{ item }}"
+        dest: "{{ server_root }}/newrelic/extensions/{{ item }}"
+        owner: "{{ server_user }}"
+        group: "{{ server_group }}"
+      with_items: "{{ custom_instrumentation_files }}"
+     become: true
