@@ -72,7 +72,7 @@ Service name under which the web server runs. Used by Ansible to restart the web
 
 ### <a name='Agentconfigurationvariables'></a>Agent configuration variables
 
-Agent configuration goes in the `nr_java_agent_config` dictionary and is added to the Java agent's config file - `newrelic.yml`. The most common settings can be specified through this role. Examples can be found in [examples/agent_config.yml](/examples/agent_config.yml).
+Agent configuration goes in the `nr_java_agent_config` dictionary and is added to the Java agent's config file - `newrelic.yml`. The most common settings can be specified through this role. Examples can be found in [examples/agent_install.yml](/examples/agent_install.yml).
 
 To specify **settings for specific hosts** in your inventory use the `nr_java_agent_host_config` dictionary. For examples, see [examples/inventory.yml](/examples/inventory.yml). Host values override those in `nr_java_agent_config`.
 
