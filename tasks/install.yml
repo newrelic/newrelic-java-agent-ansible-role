@@ -5,7 +5,6 @@
     state: directory
     owner: "{{ server_user }}"
     group: "{{ server_group }}"
-    mode: "0750"
   become: yes
 
 - name: Create the agent's log directory
