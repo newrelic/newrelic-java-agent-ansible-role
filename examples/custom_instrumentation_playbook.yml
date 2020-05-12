@@ -1,0 +1,18 @@
+# If you want to use the same custom instrumentation files for each
+# host, you can specify the custom_instrumentation_files variable in
+# the playbook. See examples/custom_intrumentation_inventory.yml for
+# an example showing how to use different files with different hosts.
+
+- hosts: linux_java_servers
+  vars:
+    nr_java_agent_config:
+      license_key: YOUR_LICENSE_KEY
+      app_name: Your App Name
+
+    custom_instrumentation_files:
+      - instrumentation_file_one.xml
+      - instrumentation_file_two.xml
+
+  tasks:
+   - include_role:
+       name: newrelic_java_agent
