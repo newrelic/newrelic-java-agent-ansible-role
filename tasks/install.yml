@@ -70,7 +70,7 @@
     - name: create extensions directory
       file:
         path: "{{ server_root }}/newrelic/extensions"
-       state: directory
+        state: directory
         owner: "{{ server_user }}"
         group: "{{ server_group }}"
       become: true
@@ -81,4 +81,4 @@
         owner: "{{ server_user }}"
         group: "{{ server_group }}"
       with_items: "{{ custom_instrumentation_files }}"
-     become: true
+      become: true
