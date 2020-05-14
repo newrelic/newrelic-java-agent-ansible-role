@@ -1,0 +1,40 @@
+# If you want to use different custom instrumentation files for
+# different hosts, you can specify the custom_instrumentation_files
+# variable in your inventory for each host.
+
+linux_java_servers:
+
+  hosts:
+    java_server_one:
+      ...
+      custom_instrumentation_files:
+        - all_hosts.xml
+        - server_one.xml
+
+    java_server_two:
+      ...
+      custom_instrumentation_files:
+        - all_hosts.xml
+        - server_two.xml
+
+# If instead you want to use different custom instrumentation files for
+# different host groups, you can specify the custom_instrumentation_files
+# variable for each group.
+
+server_group_one:
+  vars:
+    custom_instrumentation_files:
+      - all_hosts.xml
+      - group_one.xml
+
+  hosts:
+    ...
+
+server_group_two:
+  vars:
+    custom_instrumentation_files:
+      - all_hosts.xml
+      - group_two.xml
+
+  hosts:
+    ...

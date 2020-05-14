@@ -70,6 +70,10 @@ If set to false, the role does _not_ restart the web server after installing the
 **Required** (unless `restart_web_server` is set to `false`)
 Service name under which the web server runs. Used by Ansible to restart the web server after the agent is installed.
 
+#### <a name='custom_instrumentation_files'></a>`custom_instrumentation_files`
+**Optional**
+List of XML files to enable custom instrumentation by the Java agent. See the [Custom instrumentation section](#Custominstrumentation) for more details.
+
 ### <a name='Agentconfigurationvariables'></a>Agent configuration variables
 
 Agent configuration goes in the `nr_java_agent_config` dictionary and is added to the Java agent's config file - `newrelic.yml`. The most common settings can be specified through this role. Examples can be found in [examples/agent_install.yml](/examples/agent_install.yml).
@@ -150,6 +154,11 @@ After setting up your variables in `examples/agent_install.yml` and your invento
 ```Shell
 ansible-playbook -i examples/inventory.yml examples/agent_install.yml
 ```
+## <a name='Custominstrumentation'>Custom instrumentation
+
+If you want to enable [custom instrumentation with XML](https://docs.newrelic.com/docs/agents/java-agent/custom-instrumentation/java-instrumentation-xml), you can provide a list of XML files in the `custom_instrumentation_files` variable. These files will be copied to each host that the Java agent is being installed on, if you specify the variable in your playbook. You can also install different files to different hosts by specifying the variable at the host level in your inventory, or different files for different host groups by specifying the variable at the group level, either through your inventory or through files in the `group_vars` directory.
+
+See the [Ansible documentation on inventory and variables](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html) for more details on managing host and group variables. You can see some examples in this repo of how to specify custom instrumentation in the [custom_instrumentation_playbook.yml](examples/custom_instrumentation_playbook.yml) and [custom_instrumentation_inventory.yml](examples/custom_instrumentation_inventory.yml) files.
 
 ## <a name='Development'></a>Development
 
