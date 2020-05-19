@@ -7,6 +7,17 @@
     group: "{{ server_group }}"
   become: yes
 
+- name: Create the agent's log directory
+  file:
+    path: "{{ nr_java_agent_config.log_file_path }}"
+    state: directory
+    owner: "{{ server_user }}"
+    group: "{{ server_group }}"
+    mode: "0750"
+  when: nr_java_agent_config.log_file_path is defined
+
+  become: yes
+
 - name: Copy provided Java agent config file into place
   copy:
     src: "{{ nr_java_agent_config_file }}"
@@ -37,7 +48,6 @@
     src: "{{ nr_java_agent_zip_location }}"
     remote_src: "{{ nr_java_agent_zip_is_remote }}"
     dest: "{{ server_root }}"
-    mode: "0755"
     list_files: yes
     owner: "{{ server_user }}"
     group: "{{ server_group }}"
@@ -50,7 +60,7 @@
     src: "{{ server_root }}/newrelic/newrelic.yml.new"
     dest: "{{ server_root }}/newrelic/newrelic.yml"
     remote_src: true
-    mode: "0755"
+    mode: "0640"
     owner: "{{ server_user }}"
     group: "{{ server_group }}"
   become: true
