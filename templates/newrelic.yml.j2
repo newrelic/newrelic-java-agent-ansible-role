@@ -1,3 +1,4 @@
+#jinja2:lstrip_blocks: True
 # This file configures the New Relic Agent.  New Relic monitors
 # Java applications with deep visibility and low overhead.  For more details and additional
 # configuration options visit https://docs.newrelic.com/docs/java/java-agent-configuration.
@@ -14,6 +15,9 @@ common: &default_settings
   # license_key: '12345'
   # The key binds your Agent's data to your account in the New Relic service.
   license_key: {{ nr_java_agent_config.license_key | mandatory }}
+  {% if nr_java_agent_config.collector_host is defined %}
+  host: {{ nr_java_agent_config.collector_host }}
+  {% endif %}
 
   # Agent Enabled
   # Use this setting to disable the agent instead of removing it from the startup command.
