@@ -31,4 +31,4 @@ jobs:
       - name: Run molecule test
         working-directory: newrelic-java-agent-ansible-role
         run: |
-          molecule test
+          molecule test --all

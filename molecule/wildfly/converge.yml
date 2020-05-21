@@ -1,0 +1,20 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include newrelic-java-agent"
+      include_role:
+        name: "newrelic-java-agent-ansible-role"
+      vars:
+        nr_java_agent_config:
+          license_key: YOUR_LICENSE_KEY
+          app_name: Wildfly Molecule test
+          collector_host: localhost
+
+        server_type: wildfly
+        server_root: /opt/wildfly
+        jvm_conf_file: /opt/wildfly/bin/standalone.conf
+        server_user: wildfly
+        server_group: wildfly
+        service_name: wildfly
+        restart_web_server: true
