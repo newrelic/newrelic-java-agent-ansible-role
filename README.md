@@ -104,6 +104,10 @@ nr_java_agent_config:
   labels: Server:One;Data Center:Primary
 ```
 
+#### <a name='host'></a>`host`
+**Optional**
+If you need to specify a collector host, you can use the `host` variable. See the [New Relic documentation on collector endpoints](https://docs.newrelic.com/docs/using-new-relic/cross-product-functions/install-configure/networks) for more details.
+
 ### <a name='Otheragent-specificconfiguration'></a>Other agent-specific configuration
 
 Besides those listed above, you can configure the following settings through this Ansible role:
