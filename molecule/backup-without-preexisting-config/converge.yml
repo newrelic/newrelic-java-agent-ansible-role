@@ -1,0 +1,51 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Run agent install role once"
+      include_role:
+        name: "newrelic-java-agent-ansible-role"
+      vars:
+        nr_java_agent_config:
+          license_key: YOUR_LICENSE_KEY
+          app_name: Molecule backup first run
+          collector_host: localhost
+
+        server_type: tomcat
+        server_root: /var/lib/tomcat8
+        jvm_conf_file: /usr/share/tomcat8/bin/setenv.sh
+        server_user: tomcat8
+        server_group: tomcat8
+        restart_web_server: false
+
+    - name: "Run agent install role again - create .orig"
+      include_role:
+        name: "newrelic-java-agent-ansible-role"
+      vars:
+        nr_java_agent_config:
+          license_key: YOUR_LICENSE_KEY
+          app_name: Molecule backup second run
+          collector_host: localhost
+
+        server_type: tomcat
+        server_root: /var/lib/tomcat8
+        jvm_conf_file: /usr/share/tomcat8/bin/setenv.sh
+        server_user: tomcat8
+        server_group: tomcat8
+        restart_web_server: false
+
+    - name: "Run agent install role once more - create .prev"
+      include_role:
+        name: "newrelic-java-agent-ansible-role"
+      vars:
+        nr_java_agent_config:
+          license_key: YOUR_LICENSE_KEY
+          app_name: Molecule backup third run
+          collector_host: localhost
+
+        server_type: tomcat
+        server_root: /var/lib/tomcat8
+        jvm_conf_file: /usr/share/tomcat8/bin/setenv.sh
+        server_user: tomcat8
+        server_group: tomcat8
+        restart_web_server: false

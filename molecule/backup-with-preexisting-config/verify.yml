@@ -1,0 +1,25 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  tasks:
+  - name: Make sure the backup file was created
+    wait_for:
+      path: /var/lib/tomcat8/newrelic/newrelic.yml.orig
+      search_regex: Old App Name
+      timeout: 1
+  
+  - name: Make sure the new app name is in the newrelic.yml file
+    wait_for:
+      path: /var/lib/tomcat8/newrelic/newrelic.yml
+      search_regex: Molecule backup test
+      timeout: 1
+
+  - name: Make sure .prev is _not_ created
+    block:
+      - stat:
+          path: /var/lib/tomcat8/newrelic/newrelic.yml.prev
+        register: prev
+      - assert:
+          that: not prev.stat.exists

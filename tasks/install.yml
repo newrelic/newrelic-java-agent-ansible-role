@@ -66,6 +66,10 @@
   become: true
   notify:
     - restart web server
+  # This task always updates the newrelic.yml file's modified
+  # timestamp, so it is technically not idempotent
+  tags:
+    - molecule-idempotence-notest
 
 - name: Remove newrelic.yml.new
   file:
