@@ -1,0 +1,11 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  tasks:
+  - name: Make sure the agent started up and connected to the right collector
+    wait_for:
+      path: /opt/wildfly/newrelic/logs/newrelic_agent.log
+      search_regex: Failed to connect to localhost:443 for Wildfly Molecule test
+      timeout: 30
