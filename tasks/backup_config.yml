@@ -43,6 +43,10 @@
       group: "{{ server_group }}"
       mode: "0640"
     become: true
+    # This task is not idempotent on the second run, only on subsequent runs,
+    # so disable idempotence testing.
+    tags:
+      - molecule-idempotence-notest
 
   # If neither .prev nor .orig exists, we've never run before.
   # Copy the existing newrelic.yml to .orig no matter what.
@@ -56,7 +60,7 @@
       group: "{{ server_group }}"
       mode: "0640"
     become: true
-    # This task is not idempotent on the first run, only on subsequent runs,
+    # This task is not idempotent on the second run, only on subsequent runs,
     # so disable idempotence testing.
     tags:
       - molecule-idempotence-notest

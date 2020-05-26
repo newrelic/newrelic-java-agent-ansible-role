@@ -1,0 +1,17 @@
+---
+# This is an example playbook to execute Ansible tests.
+
+- name: Verify
+  hosts: all
+  tasks:
+  - name: Wait for tomcat to (not) restart
+    pause:
+      seconds: 10
+  - name: Make sure agent log does not exist
+    block:
+      - name:
+        stat:
+          path: /var/lib/tomcat8/newrelic/logs/newrelic_agent.log
+        register: log_file
+      - assert:
+          that: not log_file.stat.exists
