@@ -104,9 +104,9 @@ nr_java_agent_config:
   labels: Server:One;Data Center:Primary
 ```
 
-#### <a name='host'></a>`host`
+#### <a name='collector_host'></a>`collector_host`
 **Optional**
-If you need to specify a collector host, you can use the `host` variable. See the [New Relic documentation on collector endpoints](https://docs.newrelic.com/docs/using-new-relic/cross-product-functions/install-configure/networks) for more details.
+If you need to specify a collector host, you can use the `collector_host` variable. See the [New Relic documentation on collector endpoints](https://docs.newrelic.com/docs/using-new-relic/cross-product-functions/install-configure/networks) for more details.
 
 ### <a name='Otheragent-specificconfiguration'></a>Other agent-specific configuration
 
