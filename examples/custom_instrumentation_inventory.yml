@@ -6,13 +6,13 @@ linux_java_servers:
 
   hosts:
     java_server_one:
-      ...
+      #...
       custom_instrumentation_files:
         - all_hosts.xml
         - server_one.xml
 
     java_server_two:
-      ...
+      #...
       custom_instrumentation_files:
         - all_hosts.xml
         - server_two.xml
@@ -28,7 +28,7 @@ server_group_one:
       - group_one.xml
 
   hosts:
-    ...
+    #...
 
 server_group_two:
   vars:
@@ -37,4 +37,4 @@ server_group_two:
       - group_two.xml
 
   hosts:
-    ...
+    #...
