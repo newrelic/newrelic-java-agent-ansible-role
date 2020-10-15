@@ -4,4 +4,22 @@
     name: "{{ service_name }}"
     state: restarted
   become: yes
-  when: restart_web_server|default(true)|bool
+  when: 
+    - restart_web_server|default(true)|bool
+    - server_type != "websphere"
+
+- name: stop websphere server
+  shell: "{{ server_root }}/bin/stopServer.sh {{ was_server_name }} -username {{ wsadmin_user }} -password {{ wsadmin_password }}"
+  become: yes
+  when: 
+    - restart_web_server|default(true)|bool
+    - server_type == "websphere"
+  listen: restart web server
+
+- name: start websphere server
+  shell: "{{ server_root }}/bin/startServer.sh {{ was_server_name }} -username {{ wsadmin_user }} -password {{ wsadmin_password }}"
+  become: yes
+  when: 
+    - restart_web_server|default(true)|bool
+    - server_type == "websphere"
+  listen: restart web server

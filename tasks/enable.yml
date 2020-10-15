@@ -29,3 +29,58 @@
   become: yes
   notify:
     - restart web server
+
+- name: Websphere javaagent script copy
+  copy:
+    src: "{{ role_path }}/files/addJavaAgentWAS.py"
+    dest: "/tmp/addJavaAgentWAS.py"
+    owner: "{{ server_user }}"
+    group: "{{ server_group }}"
+    mode: "0750"
+  when: server_type == "websphere"
+  become: yes
+  register: copyStep
+
+- name: Websphere -javaagent setup
+  shell: "{{ server_root }}/bin/wsadmin.sh -username {{ wsadmin_user }} -password {{ wsadmin_password }} -f {{ copyStep.dest }} {{ was_server_name }} {{ server_root }}/newrelic/newrelic.jar"
+  when: server_type == "websphere"
+  become: yes
+  register: wsjavaagentscript
+  changed_when: "'javaagent already defined' not in wsjavaagentscript.stdout"
+  notify: restart web server
+
+- name: Websphere Java2 security WAS 9.x
+  blockinfile:
+    backup: yes
+    path: "{{ server_root }}/java/{{ java_version }}/jre/lib/security/java.policy"
+    block: |
+      grant codeBase "file:{{ server_root }}/newrelic-" {
+       permission java.security.AllPermission;
+       permission java.net.NetPermission "specifyStreamHandler";
+       permission java.net.SocketPermission "*.newrelic.com", "connect,accept,resolve";
+      };
+  when: 
+    - server_type == "websphere"
+    - was_version == "9.x"
+    - was_java_security_update|default(false)|bool
+  become: yes
+  notify: 
+    - restart web server
+
+- name: Websphere Java2 security WAS 8.x
+  blockinfile:
+    backup: yes
+    path: "{{ server_root }}/java/jre/lib/security/java.policy"
+    block: |
+      grant codeBase "file:{{ server_root }}/newrelic-" {
+       permission java.security.AllPermission;
+       permission java.net.NetPermission "specifyStreamHandler";
+       permission java.net.SocketPermission "*.newrelic.com", "connect,accept,resolve";
+      };
+  when: 
+    - server_type == "websphere"
+    - was_version == "8.x"
+    - was_java_security_update|default(false)|bool
+  become: yes
+  notify: 
+    - restart web server
