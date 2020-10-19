@@ -8,16 +8,26 @@
     - restart_web_server|default(true)|bool
     - server_type != "websphere"
 
-- name: stop websphere server
+- name: stop websphere server with auth
   shell: "{{ server_root }}/bin/stopServer.sh {{ was_server_name }} -username {{ wsadmin_user }} -password {{ wsadmin_password }}"
   become: yes
   when: 
     - restart_web_server|default(true)|bool
     - server_type == "websphere"
+    - wsadmin_auth|default(true)|bool
+  listen: restart web server
+
+- name: stop websphere server no auth
+  shell: "{{ server_root }}/bin/stopServer.sh {{ was_server_name }}"
+  become: yes
+  when: 
+    - restart_web_server|default(true)|bool
+    - server_type == "websphere"
+    - not wsadmin_auth|default(true)|bool
   listen: restart web server
 
 - name: start websphere server
-  shell: "{{ server_root }}/bin/startServer.sh {{ was_server_name }} -username {{ wsadmin_user }} -password {{ wsadmin_password }}"
+  shell: "{{ server_root }}/bin/startServer.sh {{ was_server_name }}"
   become: yes
   when: 
     - restart_web_server|default(true)|bool
