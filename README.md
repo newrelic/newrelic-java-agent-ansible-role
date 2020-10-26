@@ -11,6 +11,7 @@ This role installs and configures the [New Relic Java agent][3]. It should work 
 	* [Agent configuration variables](#Agentconfigurationvariables)
 	* [Other agent-specific configuration](#Otheragent-specificconfiguration)
 	* [Using your own agent config file](#Usingyourownagentconfigfile)
+  * [WebSphere](#WebSphere)
 * [Example usage](#Exampleusage)
 * [Community](#Community)
 * [Issues / Enhancement Requests](#IssuesEnhancementRequests)
@@ -46,15 +47,15 @@ This role uses variables for two purposes: role configuration and agent configur
 
 #### <a name='server_type'></a>`server_type`
 **Required**
-Web server used by your application. Possible values are: `tomcat`, `jetty`, and `wildfly` (standalone mode only).
+Web server used by your application. Possible values are: `tomcat`, `jetty`, `wildfly` (standalone mode only), and `websphere`. For WebSphere, please see the [WebSphere configuration section](#WebSphere).
 
 #### <a name='server_root'></a>`server_root`
 **Required**
-Location of the web server on the host. The agent's JAR, configuration, and log files will live in a subdirectory of this directory.
+Location of the web server on the host. The agent's JAR, configuration, and log files will live in a subdirectory of this directory. For WebSphere, this should be set to the profile's location.
 
 #### <a name='jvm_conf_file'></a>`jvm_conf_file`
 **Required**
-Path of the web server configuration file to reference the New Relic Java agent. For Tomcat, for instance, it's `setenv.sh`. If it doesn't exist, the file will be created.
+Path of the web server configuration file to reference the New Relic Java agent. For Tomcat, for instance, it's `setenv.sh`. If it doesn't exist, the file will be created. This is not required for WebSphere.
 
 #### <a name='server_userserver_group'></a>`server_user` /  `server_group`
 **Required**
@@ -68,7 +69,7 @@ If set to false, the role does _not_ restart the web server after installing the
 
 #### <a name='service_name'></a>`service_name`
 **Required** (unless `restart_web_server` is set to `false`)
-Service name under which the web server runs. Used by Ansible to restart the web server after the agent is installed.
+Service name under which the web server runs. Used by Ansible to restart the web server after the agent is installed. This is not required for WebSphere.
 
 #### <a name='custom_instrumentation_files'></a>`custom_instrumentation_files`
 **Optional**
@@ -148,6 +149,75 @@ If this file is on the target hosts instead of on the system running Ansible, se
 ```yaml
 nr_java_agent_config_file_is_remote: true
 ```
+
+### <a name='WebSphere'></a>WebSphere
+
+Multiple additional configuration values are available for WebSphere application servers. Any values marked as required in this section are only required for `websphere` server types.As noted above, server_root should be set to the profile location and server_type should be `websphere`
+
+#### <a name='was_server_name'></a>`was_server_name`
+**Required**
+
+The WebSphere application server / JVM name. The -javaagent configuration will be added to the generic JVM arguments of this application server / JVM. This will also be used to determine which cluster to ripple start in a clustered environment and which application server / JVM to restart in a non clustered environment.
+
+#### <a name='was_clustered'></a>`was_clustered`
+**Required**
+
+A boolean value indicating if WebSphere is clustered. The default value is true. All wsadmin interactions should be with the deployment manager. If `restart_web_server` is true, this triggers cluster node syncs and a ripple start of the cluster if the agent or its configuration is modified instead of directly interacting with individual application servers.
+
+#### <a name='was_java_security_update'></a>`was_java_security_update`
+**Optional**
+
+A boolean value that will trigger Java 2 security updates. The default value is false. This will update the java.policy file to enable New Relic for all app servers as described in the [New Relic Java agent documentation.](https://docs.newrelic.com/docs/agents/java-agent/installation/install-java-agent-java-2-security#websphere-java-2) A backup version of the file will be created in the same directory. This requires `was_version`, `was_root`, and `was_java_version` to be set.
+
+#### <a name='was_version'></a>`was_version`
+**Optional**
+
+Set to `8.x` or `9.x`. This is required if `was_java_security_update` is true.
+
+#### <a name='was_root'></a>`was_root`
+**Optional**
+
+Set to the WebSphere install directory. Will be used to locate the ./java directory that contains the Java 2 java.policy file. This is required if `was_java_security_update` is true. Example value: `/opt/IBM/WebSphere/AppServer`
+
+#### <a name='was_java_version'></a>`was_java_version`
+**Optional**
+
+The path to the java.policy file includes a directory that reflects the current Java version for WebSphere 9.x. This is required if `was_java_security_update` is true and `was_version` is 9.x. Example value: `8.0`
+
+#### <a name='wsadmin_primary'></a>`wsadmin_primary`
+**Required**
+
+A boolean value indicating if this is the primary application server in the cluster. The cluster configuration node sync and ripple start will be triggered from this host. The default value is false and this variable needs to be set on one application server per cluster.
+
+#### <a name='wsadmin_auth'></a>`wsadmin_auth`
+**Required**
+
+A boolean value indicating if authentication is required when executing wsadmin scripts. The default value is false. Set to true and define the five optional wsadmin variables if authentication is not predefined in soap.properties or wsadmin.properties for the WebSphere profile.
+
+#### <a name='wsadmin_conntype'></a>`wsadmin_conntype`
+**Optional**
+
+The connection type used by wsadmin.sh. Required if `wsadmin_auth` is true. The default value is `SOAP`. Other options include `RMI`, `JSR160RMI`, and `IPC`.
+
+#### <a name='wsadmin_host'></a>`wsadmin_host`
+**Optional**
+
+The host to connect to when executing wsadmin.sh. Required if `wsadmin_auth` is true. This should be the domain manager management host in a clustered environment.
+
+#### <a name='wsadmin_port'></a>`wsadmin_port`
+**Optional**
+
+The port to connect to when executing wsadmin.sh. Reqired if `wsadmin_auth` is true. This should be the domain manager management port in a clustered environment.
+
+#### <a name='wsadmin_user'></a>`wsadmin_user`
+**Optional**
+
+The user to use when executing wsadmin.sh. Required if `wsadmin_auth` is true.
+
+#### <a name='wsadmin_password'></a>`wsadmin_password`
+**Optional**
+
+The password to use when executing wsadmin.sh. Required if `wsadmin_auth` is true. An Ansible vault encrypted value can be used.
 
 ## <a name='Exampleusage'></a>Example usage
 
