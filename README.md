@@ -160,14 +160,14 @@ Multiple additional configuration values are available for WebSphere application
 The WebSphere application server / JVM name. The -javaagent configuration will be added to the generic JVM arguments of this application server / JVM. This will also be used to determine which cluster to ripple start in a clustered environment and which application server / JVM to restart in a non clustered environment.
 
 #### <a name='was_clustered'></a>`was_clustered`
-**Required**
+**Optional** - **Default:** `true`
 
-A boolean value indicating if WebSphere is clustered. The default value is true. All wsadmin interactions should be with the deployment manager. If `restart_web_server` is true, this triggers cluster node syncs and a ripple start of the cluster if the agent or its configuration is modified instead of directly interacting with individual application servers.
+A boolean value indicating if WebSphere is clustered. If true, all wsadmin interactions should be with the deployment manager. If `restart_web_server` is true, this triggers cluster node syncs and a ripple start of the cluster if the agent or its configuration is modified instead of directly interacting with individual application servers. If false, the application server / JVM defined will be restarted directly with stopServer.sh and startServer.sh.
 
 #### <a name='was_java_security_update'></a>`was_java_security_update`
-**Optional**
+**Optional** - **Default:** `false`
 
-A boolean value that will trigger Java 2 security updates. The default value is false. This will update the java.policy file to enable New Relic for all app servers as described in the [New Relic Java agent documentation.](https://docs.newrelic.com/docs/agents/java-agent/installation/install-java-agent-java-2-security#websphere-java-2) A backup version of the file will be created in the same directory. This requires `was_version`, `was_root`, and `was_java_version` to be set.
+A boolean value that will trigger Java 2 security updates. If true, this will update the java.policy file to enable New Relic for all app servers as described in the [New Relic Java agent documentation.](https://docs.newrelic.com/docs/agents/java-agent/installation/install-java-agent-java-2-security#websphere-java-2) A backup version of the file will be created in the same directory. This requires `was_version`, `was_root`, and `was_java_version` to be set.
 
 #### <a name='was_version'></a>`was_version`
 **Optional**
@@ -185,39 +185,39 @@ Set to the WebSphere install directory. Will be used to locate the ./java direct
 The path to the java.policy file includes a directory that reflects the current Java version for WebSphere 9.x. This is required if `was_java_security_update` is true and `was_version` is 9.x. Example value: `8.0`
 
 #### <a name='wsadmin_primary'></a>`wsadmin_primary`
-**Required**
+**Optional** - **Default:** `false`
 
-A boolean value indicating if this is the primary application server in the cluster. The cluster configuration node sync and ripple start will be triggered from this host. The default value is false and this variable needs to be set on one application server per cluster.
+A boolean value indicating if this is the primary application server in the cluster. The cluster configuration node sync and ripple start will be triggered from this host. A single application server / JVM per cluster should include wsadmin_primary: true. This prevents duplicate node syncs and cluster ripple starts. **The node sync and ripple start will not occur if an application server / JVM is not set as wsadmin_primary.**
 
 #### <a name='wsadmin_auth'></a>`wsadmin_auth`
-**Required**
+**Optional** - **Default:** `false`
 
-A boolean value indicating if authentication is required when executing wsadmin scripts. The default value is false. Set to true and define the five optional wsadmin variables if authentication is not predefined in soap.properties or wsadmin.properties for the WebSphere profile.
+A boolean value indicating if authentication is required when executing wsadmin scripts. Set to true and define `wsadmin_conntype`, `wsadmin_host`, `wsadmin_port`, `wsadmin_user`, and `wsadmin_password` if authentication is not predefined in soap.properties or wsadmin.properties for the WebSphere profile.
 
 #### <a name='wsadmin_conntype'></a>`wsadmin_conntype`
-**Optional**
+**Optional** - **Default:** `SOAP`
 
-The connection type used by wsadmin.sh. Required if `wsadmin_auth` is true. The default value is `SOAP`. Other options include `RMI`, `JSR160RMI`, and `IPC`.
+The connection type used by wsadmin.sh. Options include `SOAP`, `RMI`, `JSR160RMI`, and `IPC`.
 
 #### <a name='wsadmin_host'></a>`wsadmin_host`
 **Optional**
 
-The host to connect to when executing wsadmin.sh. Required if `wsadmin_auth` is true. This should be the domain manager management host in a clustered environment.
+The host to connect to when executing wsadmin.sh. **Required if `wsadmin_auth` is true.** This should be the domain manager management host in a clustered environment.
 
 #### <a name='wsadmin_port'></a>`wsadmin_port`
 **Optional**
 
-The port to connect to when executing wsadmin.sh. Reqired if `wsadmin_auth` is true. This should be the domain manager management port in a clustered environment.
+The port to connect to when executing wsadmin.sh. **Reqired if `wsadmin_auth` is true.** This should be the domain manager management port in a clustered environment.
 
 #### <a name='wsadmin_user'></a>`wsadmin_user`
 **Optional**
 
-The user to use when executing wsadmin.sh. Required if `wsadmin_auth` is true.
+The user to use when executing wsadmin.sh. **Required if `wsadmin_auth` is true.**
 
 #### <a name='wsadmin_password'></a>`wsadmin_password`
 **Optional**
 
-The password to use when executing wsadmin.sh. Required if `wsadmin_auth` is true. An Ansible vault encrypted value can be used.
+The password to use when executing wsadmin.sh. **Required if `wsadmin_auth` is true.** [Ansible vault can be used to encrypt this value.](https://docs.ansible.com/ansible/latest/user_guide/vault.html)
 
 ## <a name='Exampleusage'></a>Example usage
 
