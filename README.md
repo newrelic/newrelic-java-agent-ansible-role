@@ -2,7 +2,7 @@
 
 [![Molecule Test](https://github.com/newrelic/newrelic-java-agent-ansible-role/workflows/Molecule%20Test/badge.svg)](https://github.com/newrelic/newrelic-java-agent-ansible-role/actions?query=workflow%3A%22Molecule+Test%22)
 
-This role installs and configures the [New Relic Java agent][3]. It should work with minimal configuration for applications running under Tomcat, Jetty, or Wildfly. We aim to support the most popular Java web servers over time.
+This role installs and configures the [New Relic Java agent][3]. It should work with minimal configuration for applications running under Tomcat, Jetty, Wildfly, or WebSphere. We aim to support the most popular Java web servers over time.
 
 * [Requirements](#Requirements)
 * [Installation](#Installation)
