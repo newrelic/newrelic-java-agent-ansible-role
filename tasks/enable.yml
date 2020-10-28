@@ -49,6 +49,7 @@
   become: yes
   register: wsjavaagentscript
   changed_when: "'javaagent already defined' not in wsjavaagentscript.stdout"
+  throttle: 1
   notify: 
     - websphere node sync
     - restart web server
@@ -61,6 +62,7 @@
   become: yes
   register: wsjavaagentscript
   changed_when: "'Added javaagent argument on at least one server' in wsjavaagentscript.stdout"
+  throttle: 1
   notify: 
     - websphere node sync
     - restart web server
