@@ -42,20 +42,20 @@
   register: copyStep
 
 - name: Websphere -javaagent setup with auth
-  shell: "{{ server_root }}/bin/wsadmin.sh -conntype {{ wsadmin_conntype | default('SOAP') }} -host {{ wsadmin_host }} -port {{ wsadmin_port }} -user {{ wsadmin_user }} -password {{ wsadmin_password }} -f {{ copyStep.dest }} {{ was_server_name }} {{ server_root }}/newrelic/newrelic.jar"
+  shell: "{{ server_root }}/bin/wsadmin.sh -conntype {{ wsadmin_conntype | default('SOAP') }} -host {{ wsadmin_host }} -port {{ wsadmin_port }} -user {{ wsadmin_user }} -password {{ wsadmin_password }} -f {{ copyStep.dest }} {{ was_server_name }} {{ was_add_or_replace | default('add') }} {{ server_root }}/newrelic/newrelic.jar"
   when: 
     - server_type == "websphere"
     - wsadmin_auth|default(false)|bool
   become: yes
   register: wsjavaagentscript
-  changed_when: "'javaagent already defined' not in wsjavaagentscript.stdout"
+  changed_when: "'Added javaagent argument on at least one server' in wsjavaagentscript.stdout"
   throttle: 1
   notify: 
     - websphere node sync
     - restart web server
 
 - name: Websphere -javaagent setup without auth
-  shell: "{{ server_root }}/bin/wsadmin.sh -f {{ copyStep.dest }} {{ was_server_name }} {{ server_root }}/newrelic/newrelic.jar"
+  shell: "{{ server_root }}/bin/wsadmin.sh -f {{ copyStep.dest }} {{ was_server_name }} {{ was_add_or_replace | default('add') }} {{ server_root }}/newrelic/newrelic.jar"
   when: 
     - server_type == "websphere"
     - not wsadmin_auth|default(false)|bool

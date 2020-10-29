@@ -164,6 +164,15 @@ The WebSphere application server / JVM name. The -javaagent configuration will b
 
 A boolean value indicating if WebSphere is clustered. If true, all wsadmin interactions should be with the deployment manager. If `restart_web_server` is true, this triggers cluster node syncs and a ripple start of the cluster if the agent or its configuration is modified instead of directly interacting with individual application servers. If false, the application server / JVM defined will be restarted directly with stopServer.sh and startServer.sh.
 
+#### <a name='was_add_or_replace'></a>`was_add_or_replace`
+**Optional** - **Default:** `add`
+
+Set to `add` or `replace` to control if the New Relic javaagent argument is added alongside existing javaagent arguments or if it should replace all existing javaagent arguments.
+
+* If set to `add` the New Relic javaagent argument will be added alongside any javaagent arguments in the existing configuration
+* If set to `replace` all other javaagent arguments will be removed and the New Relic javaagent argument will be added.
+* If `add` was previously used to deploy New Relic alongside other agents, `replace` can be used in the future to remove all non New Relic javaagent arguments
+
 #### <a name='was_java_security_update'></a>`was_java_security_update`
 **Optional** - **Default:** `false`
 
@@ -177,7 +186,7 @@ Set to `8.x` or `9.x`. This is required if `was_java_security_update` is true.
 #### <a name='was_root'></a>`was_root`
 **Optional**
 
-Set to the WebSphere install directory. Will be used to locate the ./java directory that contains the Java 2 java.policy file. This is required if `was_java_security_update` is true. Example value: `/opt/IBM/WebSphere/AppServer`
+Set to the WebSphere install directory. Will be used to locate the java directory that contains the Java 2 java.policy file. This is required if `was_java_security_update` is true. Example value: `/opt/IBM/WebSphere/AppServer`
 
 #### <a name='was_java_version'></a>`was_java_version`
 **Optional**
