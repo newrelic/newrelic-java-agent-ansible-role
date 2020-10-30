@@ -48,7 +48,7 @@
     - wsadmin_auth|default(false)|bool
   become: yes
   register: wsjavaagentscript
-  changed_when: "'Added javaagent argument on at least one server' in wsjavaagentscript.stdout"
+  changed_when: "'Added/replaced javaagent argument on at least one server' in wsjavaagentscript.stdout"
   throttle: 1
   notify: 
     - websphere node sync
@@ -61,7 +61,7 @@
     - not wsadmin_auth|default(false)|bool
   become: yes
   register: wsjavaagentscript
-  changed_when: "'Added javaagent argument on at least one server' in wsjavaagentscript.stdout"
+  changed_when: "'Added/replaced javaagent argument on at least one server' in wsjavaagentscript.stdout"
   throttle: 1
   notify: 
     - websphere node sync
@@ -71,7 +71,7 @@
   blockinfile:
     backup: yes
     path: "{{ was_root }}/java/{{ was_java_version }}/jre/lib/security/java.policy"
-    marker: "# {mark} ANSIBLE MANAGED BLOCK - {{ was_server_name }}"
+    marker: "// {mark} ANSIBLE MANAGED BLOCK - {{ was_server_name }}"
     block: |
       grant codeBase "file:{{ server_root }}/newrelic-" {
        permission java.security.AllPermission;
@@ -90,7 +90,7 @@
   blockinfile:
     backup: yes
     path: "{{ was_root }}/java/jre/lib/security/java.policy"
-    marker: "# {mark} ANSIBLE MANAGED BLOCK - {{ was_server_name }}"
+    marker: "// {mark} ANSIBLE MANAGED BLOCK - {{ was_server_name }}"
     block: |
       grant codeBase "file:{{ server_root }}/newrelic-" {
        permission java.security.AllPermission;
