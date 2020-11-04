@@ -3,18 +3,26 @@ import time
 
 # Must be executed with wsadmin.sh and is typically invoked via Ansible.
 # Arguments:
-# * Server/JVM name
+# * Server/JVM name (or all*)
+# ** If all is used, we will attempt to include the javaagent flag on all application servers returned by wsadmin
+# ** This can cause issues if application servers are instrumented and their hosts are not included in the play.
+# ** If a javaagent argument is added and the JAR does not exist on that host, the application server will not start correctly.
 # * add or replace - add the New Relic javaagent flag to existing generic JVM arguments or replace existing javaagent flags
 # * Full path to the newrelic.jar location
 
 # Get the matching JVM IDs
 def findJvmId(name):
     ids = []
-    servers = AdminTask.listServers("[-serverType APPLICATION_SERVER]").splitlines()
+    servers = AdminConfig.list("Server").splitlines()
     for server in servers:
-        serverName = AdminConfig.showAttribute(server,"name")
-        if (serverName == name):
-            ids.append(AdminConfig.list("JavaVirtualMachine",server))
+        serverType = AdminConfig.showAttribute(server,"serverType")
+        if serverType == "APPLICATION_SERVER":
+            if name.lower() == 'all':
+                ids.append(AdminConfig.list("JavaVirtualMachine",server))
+            else: 
+                serverName = AdminConfig.showAttribute(server,"name")
+                if (serverName.lower() == name.lower()):
+                    ids.append(AdminConfig.list("JavaVirtualMachine",server))
     return ids
 
 # Get current generic JVM arguments 
@@ -40,7 +48,7 @@ def setJvmArguments(jvm, args):
 
 def addJavaagent(name, backupExists, jvm, args, path):
     added = 0
-    if (args.find("javaagent:"+str(path)) > -1):
+    if (args.find("newrelic.jar") > -1):
         print("New Relic javaagent already defined")
     else: 
         if backupExists == 0:
@@ -80,7 +88,21 @@ def replaceJavaagent(name, jvm, args, path):
         setJvmArguments(jvm, newArgs)
     return modified+added
 
-# JVM Name, whether to add to or replace existing javaagent arguments, and location of Java agent must be passed as arguments
+# If any of the servers are a managed process (clustered), sync the node configuration.
+def syncNodes(name):
+    managed = 0
+    servers = AdminControl.queryNames('type=Server,*').splitlines()
+    for server in servers:
+        # If we find a ManagedProcess, we will sync the node configuration
+        if (server.find('processType=ManagedProcess') > -1):
+            managed = 1
+    if managed == 1:
+        print("Clustered environment found - syncing nodes")
+        print AdminNodeManagement.syncActiveNodes()
+    else:
+        print("Unmanaged process. No cluster. No need to sync node configurations from dmgr.")
+
+# JVM name (or all), add or replace, and the location of Java agent JAR must be passed as arguments
 name = sys.argv[0]
 addOrReplace = sys.argv[1]
 path = sys.argv[2]
@@ -102,6 +124,8 @@ for jvm in jvms:
     else:
         changed += addJavaagent(name, 0, jvm, args, path)
 if changed > 0:
+    # Sync node configuration if clustered
+    syncNodes(name)
     print("Added/replaced javaagent argument on at least one server.")
 else:
     print("New Relic javaagent already defined on all matching servers")

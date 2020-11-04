@@ -51,7 +51,7 @@ Web server used by your application. Possible values are: `tomcat`, `jetty`, `wi
 
 #### <a name='server_root'></a>`server_root`
 **Required**
-Location of the web server on the host. The agent's JAR, configuration, and log files will live in a subdirectory of this directory. For WebSphere, this should be set to the profile's location.
+Location of the web server on the host. The agent's JAR, configuration, and log files will live in a subdirectory of this directory.
 
 #### <a name='jvm_conf_file'></a>`jvm_conf_file`
 **Required**
@@ -159,10 +159,10 @@ Multiple additional configuration values are available for WebSphere application
 
 The WebSphere application server / JVM name. The -javaagent configuration will be added to the generic JVM arguments of this application server / JVM. This will also be used to determine which cluster to ripple start in a clustered environment and which application server / JVM to restart in a non clustered environment.
 
-#### <a name='was_clustered'></a>`was_clustered`
-**Optional** - **Default:** `true`
+#### <a name='was_profile_root'></a>`was_profile_root`
+**Required**
 
-A boolean value indicating if WebSphere is clustered. If true, all wsadmin interactions should be with the deployment manager. If `restart_web_server` is true, this triggers cluster node syncs and a ripple start of the cluster if the agent or its configuration is modified instead of directly interacting with individual application servers. If false, the application server / JVM defined will be restarted directly with stopServer.sh and startServer.sh.
+Set to the WebSphere profile location. This will be used to locate the appropriate wsadmin.sh script. Example value: `/opt/IBM/WebSphere/AppServer/profiles/Managed1`
 
 #### <a name='was_add_or_replace'></a>`was_add_or_replace`
 **Optional** - **Default:** `add`
@@ -192,11 +192,6 @@ Set to the WebSphere install directory. Will be used to locate the java director
 **Optional**
 
 The path to the java.policy file includes a directory that reflects the current Java version for WebSphere 9.x. This is required if `was_java_security_update` is true and `was_version` is 9.x. Example value: `8.0`
-
-#### <a name='wsadmin_primary'></a>`wsadmin_primary`
-**Optional** - **Default:** `false`
-
-A boolean value indicating if this is the primary application server in the cluster. The cluster configuration node sync and ripple start will be triggered from this host. A single application server / JVM per cluster should include wsadmin_primary: true. This prevents duplicate node syncs and cluster ripple starts. **The node sync and ripple start will not occur if an application server / JVM is not set as wsadmin_primary.**
 
 #### <a name='wsadmin_auth'></a>`wsadmin_auth`
 **Optional** - **Default:** `false`

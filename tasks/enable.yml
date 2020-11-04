@@ -42,7 +42,7 @@
   register: copyStep
 
 - name: Websphere -javaagent setup with auth
-  shell: "{{ server_root }}/bin/wsadmin.sh -conntype {{ wsadmin_conntype | default('SOAP') }} -host {{ wsadmin_host }} -port {{ wsadmin_port }} -user {{ wsadmin_user }} -password {{ wsadmin_password }} -f {{ copyStep.dest }} {{ was_server_name }} {{ was_add_or_replace | default('add') }} {{ server_root }}/newrelic/newrelic.jar"
+  shell: "{{ was_profile_root }}/bin/wsadmin.sh -conntype {{ wsadmin_conntype | default('SOAP') }} -host {{ wsadmin_host }} -port {{ wsadmin_port }} -user {{ wsadmin_user }} -password {{ wsadmin_password }} -f {{ copyStep.dest }} {{ was_server_name }} {{ was_add_or_replace | default('add') }} {{ server_root }}/newrelic/newrelic.jar"
   when: 
     - server_type == "websphere"
     - wsadmin_auth|default(false)|bool
@@ -51,11 +51,10 @@
   changed_when: "'Added/replaced javaagent argument on at least one server' in wsjavaagentscript.stdout"
   throttle: 1
   notify: 
-    - websphere node sync
     - restart web server
 
 - name: Websphere -javaagent setup without auth
-  shell: "{{ server_root }}/bin/wsadmin.sh -f {{ copyStep.dest }} {{ was_server_name }} {{ was_add_or_replace | default('add') }} {{ server_root }}/newrelic/newrelic.jar"
+  shell: "{{ was_profile_root }}/bin/wsadmin.sh -f {{ copyStep.dest }} {{ was_server_name }} {{ was_add_or_replace | default('add') }} {{ server_root }}/newrelic/newrelic.jar"
   when: 
     - server_type == "websphere"
     - not wsadmin_auth|default(false)|bool
@@ -64,14 +63,13 @@
   changed_when: "'Added/replaced javaagent argument on at least one server' in wsjavaagentscript.stdout"
   throttle: 1
   notify: 
-    - websphere node sync
     - restart web server
 
 - name: Websphere Java2 security WAS 9.x
   blockinfile:
     backup: yes
     path: "{{ was_root }}/java/{{ was_java_version }}/jre/lib/security/java.policy"
-    marker: "// {mark} ANSIBLE MANAGED BLOCK - {{ was_server_name }}"
+    marker: "// {mark} ANSIBLE MANAGED BLOCK - {{ server_root }}"
     block: |
       grant codeBase "file:{{ server_root }}/newrelic-" {
        permission java.security.AllPermission;
@@ -90,7 +88,7 @@
   blockinfile:
     backup: yes
     path: "{{ was_root }}/java/jre/lib/security/java.policy"
-    marker: "// {mark} ANSIBLE MANAGED BLOCK - {{ was_server_name }}"
+    marker: "// {mark} ANSIBLE MANAGED BLOCK - {{ server_root }}"
     block: |
       grant codeBase "file:{{ server_root }}/newrelic-" {
        permission java.security.AllPermission;

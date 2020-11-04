@@ -8,90 +8,37 @@
     - restart_web_server|default(true)|bool
     - server_type != "websphere"
 
-- name: websphere node sync with auth
-  shell: "{{ server_root }}/bin/wsadmin.sh -conntype {{ wsadmin_conntype | default('SOAP') }} -host {{ wsadmin_host }} -port {{ wsadmin_port }} -user {{ wsadmin_user }} -password {{ wsadmin_password }} -lang jython -c 'print AdminNodeManagement.syncActiveNodes()'"
-  become: yes
-  when: 
-    - server_type == "websphere"
-    - wsadmin_auth|default(false)|bool
-    - was_clustered|default(true)|bool
-    - wsadmin_primary|default(false)|bool
-  listen: websphere node sync
-
-- name: websphere node sync no auth
-  shell: "{{ server_root }}/bin/wsadmin.sh -lang jython -c 'print AdminNodeManagement.syncActiveNodes()'"
-  become: yes
-  when: 
-    - server_type == "websphere"
-    - not wsadmin_auth|default(false)|bool
-    - was_clustered|default(true)|bool
-    - wsadmin_primary|default(false)|bool
-  listen: websphere node sync
-
-- name: stop websphere server with auth no cluster
-  shell: "{{ server_root }}/bin/stopServer.sh {{ was_server_name }} -username {{ wsadmin_user }} -password {{ wsadmin_password }}"
-  become: yes
-  when: 
-    - restart_web_server|default(true)|bool
-    - server_type == "websphere"
-    - wsadmin_auth|default(false)|bool
-    - not was_clustered|default(true)|bool
-  listen: restart web server
-
-- name: stop websphere server no auth no cluster
-  shell: "{{ server_root }}/bin/stopServer.sh {{ was_server_name }}"
-  become: yes
-  when: 
-    - restart_web_server|default(true)|bool
-    - server_type == "websphere"
-    - not wsadmin_auth|default(false)|bool
-    - not was_clustered|default(true)|bool
-  listen: restart web server
-
-- name: start websphere server no cluster
-  shell: "{{ server_root }}/bin/startServer.sh {{ was_server_name }}"
-  become: yes
-  when: 
-    - restart_web_server|default(false)|bool
-    - server_type == "websphere"
-    - not was_clustered|default(true)|bool
-  listen: restart web server
-
-- name: websphere cluster ripple start script copy
+- name: websphere app server restart script copy
   copy:
-    src: "{{ role_path }}/files/rippleStartWAS.py"
-    dest: "{{ server_root }}/newrelic/rippleStartWAS.py"
+    src: "{{ role_path }}/files/restartWAS.py"
+    dest: "{{ server_root }}/newrelic/restartWAS.py"
     owner: "{{ server_user }}"
     group: "{{ server_group }}"
     mode: "0750"
   when: 
     - server_type == "websphere"
     - restart_web_server|default(false)|bool
-    - was_clustered|default(true)|bool
-    - wsadmin_primary|default(false)|bool
   become: yes
-  register: rippleCopy
+  register: restartWASCopy
   listen: restart web server
 
-- name: websphere cluster ripple start with auth
-  shell: "{{ server_root }}/bin/wsadmin.sh -conntype {{ wsadmin_conntype | default('SOAP') }} -host {{ wsadmin_host }} -port {{ wsadmin_port }} -user {{ wsadmin_user }} -password {{ wsadmin_password }} -f {{ rippleCopy.dest }} {{ was_server_name }}"
+- name: websphere app server restart with auth
+  shell: "{{ was_profile_root }}/bin/wsadmin.sh -conntype {{ wsadmin_conntype | default('SOAP') }} -host {{ wsadmin_host }} -port {{ wsadmin_port }} -user {{ wsadmin_user }} -password {{ wsadmin_password }} -f {{ restartWASCopy.dest }} {{ was_server_name }}"
   become: yes
   when:
     - server_type == "websphere"
     - restart_web_server|default(false)|bool
-    - was_clustered|default(true)|bool
-    - wsadmin_primary|default(false)|bool
     - wsadmin_auth|default(false)|bool
   listen: restart web server
+  throttle: 1
 
-- name: websphere cluster ripple start no auth
-  shell: "{{ server_root }}/bin/wsadmin.sh -f {{ rippleCopy.dest }} {{ was_server_name }}"
+- name: websphere app server restart no auth
+  shell: "{{ was_profile_root }}/bin/wsadmin.sh -f {{ restartWASCopy.dest }} {{ was_server_name }}"
   become: yes
   when:
     - server_type == "websphere"
     - restart_web_server|default(false)|bool
-    - was_clustered|default(true)|bool
-    - wsadmin_primary|default(false)|bool
     - not wsadmin_auth|default(false)|bool
   listen: restart web server
+  throttle: 1
 
