@@ -36,7 +36,7 @@ def backupArguments(name, jvm, args, path):
     epoch_time = int(time.time())
     backupPath = path.replace("newrelic.jar", "backupJVMArgs-" + str(name) + "-" + str(epoch_time))
     print("Backing up previous generic JVM arguments to: "+backupPath)
-    f = open(backupPath, "w")
+    f = open(backupPath, "a")
     f.write("JVM: "+jvm+ "\n")
     f.write("Previous generic arguments:\n")
     f.write(args + "\n")
