@@ -154,10 +154,12 @@ nr_java_agent_config_file_is_remote: true
 
 Multiple additional configuration values are available for WebSphere application servers. Any values marked as required in this section are only required for `websphere` server types.As noted above, server_root should be set to the profile location and server_type should be `websphere`
 
-#### <a name='was_server_name'></a>`was_server_name`
+#### <a name='was_server_name'></a>`was_server_or_cluster_name`
 **Required**
 
-The WebSphere application server / JVM name. The -javaagent configuration will be added to the generic JVM arguments of this application server / JVM. This will also be used to determine which cluster to ripple start in a clustered environment and which application server / JVM to restart in a non clustered environment.
+The WebSphere application server / JVM name or WebSphere cluster name. The -javaagent configuration will be added to the generic JVM arguments of this application server / JVM, or all application servers / JVMs that are a member of this cluster. This will also be used to determine which application servers are restarted. Specify `all` to instrument all application servers found from the deployment manager.
+
+**CAUTION: When using all or a cluster name, ensure that all application servers using this deployment manager or all application servers in the cluster are included in the Ansible execution so that the necessary javaagent files are in place. If the javaagent flag is added to an application server running on a host that does not have the Java agent files in place, the application server will not start properly after the javaagent flag is in place.**
 
 #### <a name='was_profile_root'></a>`was_profile_root`
 **Required**

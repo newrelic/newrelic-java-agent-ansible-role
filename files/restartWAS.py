@@ -3,16 +3,21 @@ import sys
 # Return matching servers, which will be restarted later in the script.
 def findServers(name):
     mbeans = []
-    servers = AdminControl.queryNames('type=Server,*').splitlines()
+    servers = AdminConfig.list("Server").splitlines()
     for server in servers:
-        # Confirming this is an application server, not a dmgr, nodeagent, etc.
-        if (server.find('processType=UnManagedProcess') > -1) or (server.find('processType=ManagedProcess') > -1):
-            if (name.lower() == 'all'):
-                mbeans.append(server)
-            else:
-                serverName = AdminControl.getAttribute(server,"name")
-                if (serverName.lower() == name.lower()):
-                    mbeans.append(server)
+        serverType = AdminConfig.showAttribute(server,"serverType")
+        if serverType == "APPLICATION_SERVER":
+            if name.lower() == 'all':
+                mbeans.append(AdminConfig.getObjectName(server))
+                continue
+            clusterName = AdminConfig.showAttribute(server,"clusterName")
+            if clusterName != None:
+                if (clusterName.lower() == name.lower()):
+                    mbeans.append(AdminConfig.getObjectName(server))
+                    continue
+            serverName = AdminConfig.showAttribute(server,"name")
+            if (serverName.lower() == name.lower()):
+                mbeans.append(AdminConfig.getObjectName(server))
     return mbeans
 
 # Restart the application server (JVM)

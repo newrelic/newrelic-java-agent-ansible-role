@@ -11,6 +11,7 @@ import time
 # * Full path to the newrelic.jar location
 
 # Get the matching JVM IDs
+# Name can be all, to match all APPLICATION_SERVERS, a cluster name, or a WAS server name
 def findJvmId(name):
     ids = []
     servers = AdminConfig.list("Server").splitlines()
@@ -19,10 +20,15 @@ def findJvmId(name):
         if serverType == "APPLICATION_SERVER":
             if name.lower() == 'all':
                 ids.append(AdminConfig.list("JavaVirtualMachine",server))
-            else: 
-                serverName = AdminConfig.showAttribute(server,"name")
-                if (serverName.lower() == name.lower()):
+                continue
+            clusterName = AdminConfig.showAttribute(server,"clusterName")
+            if clusterName != None:
+                if (clusterName.lower() == name.lower()):
                     ids.append(AdminConfig.list("JavaVirtualMachine",server))
+                    continue
+            serverName = AdminConfig.showAttribute(server,"name")
+            if (serverName.lower() == name.lower()):
+                ids.append(AdminConfig.list("JavaVirtualMachine",server))
     return ids
 
 # Get current generic JVM arguments 

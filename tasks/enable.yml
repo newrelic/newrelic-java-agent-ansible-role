@@ -42,7 +42,7 @@
   register: copyStep
 
 - name: Websphere -javaagent setup with auth
-  command: "{{ was_profile_root }}/bin/wsadmin.sh -conntype {{ wsadmin_conntype | default('SOAP') }} -host {{ wsadmin_host }} -port {{ wsadmin_port }} -user {{ wsadmin_user }} -password {{ wsadmin_password }} -f {{ copyStep.dest }} {{ was_server_name }} {{ was_add_or_replace | default('add') }} {{ server_root }}/newrelic/newrelic.jar"
+  command: "{{ was_profile_root }}/bin/wsadmin.sh -conntype {{ wsadmin_conntype | default('SOAP') }} -host {{ wsadmin_host }} -port {{ wsadmin_port }} -user {{ wsadmin_user }} -password {{ wsadmin_password }} -f {{ copyStep.dest }} {{ was_server_or_cluster_name }} {{ was_add_or_replace | default('add') }} {{ server_root }}/newrelic/newrelic.jar"
   when: 
     - server_type == "websphere"
     - wsadmin_auth|default(false)|bool
@@ -54,7 +54,7 @@
     - restart web server
 
 - name: Websphere -javaagent setup without auth
-  command: "{{ was_profile_root }}/bin/wsadmin.sh -f {{ copyStep.dest }} {{ was_server_name }} {{ was_add_or_replace | default('add') }} {{ server_root }}/newrelic/newrelic.jar"
+  command: "{{ was_profile_root }}/bin/wsadmin.sh -f {{ copyStep.dest }} {{ was_server_or_cluster_name }} {{ was_add_or_replace | default('add') }} {{ server_root }}/newrelic/newrelic.jar"
   when: 
     - server_type == "websphere"
     - not wsadmin_auth|default(false)|bool
