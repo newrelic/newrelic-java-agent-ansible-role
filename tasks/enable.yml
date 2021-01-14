@@ -78,8 +78,9 @@
       };
   when: 
     - server_type == "websphere"
-    - was_version == "9.x"
     - was_java_security_update|default(false)|bool
+    - was_version is defined
+    - was_version == "9.x"
   become: yes
   notify: 
     - restart web server
@@ -97,8 +98,9 @@
       };
   when: 
     - server_type == "websphere"
-    - was_version == "8.x"
     - was_java_security_update|default(false)|bool
+    - was_version is defined
+    - was_version == "8.x"
   become: yes
   notify: 
     - restart web server
