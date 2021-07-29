@@ -51,8 +51,6 @@
     list_files: yes
     owner: "{{ server_user }}"
     group: "{{ server_group }}"
-    exclude:
-      - newrelic/newrelic.yml
   become: yes
 
 - name: Copy new newrelic.yml into place
