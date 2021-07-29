@@ -52,6 +52,12 @@
     owner: "{{ server_user }}"
     group: "{{ server_group }}"
   become: yes
+  
+- name: Remove default config if necessary
+  file:
+    path: "{{ server_root }}/newrelic/newrelic.yml"
+    state: absent
+  become: yes
 
 - name: Copy new newrelic.yml into place
   copy:
