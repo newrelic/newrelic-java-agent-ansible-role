@@ -1,3 +1,9 @@
+# Archival Notice
+
+❗Notice: This project has been archived _as is_ and is no longer actively maintained.
+
+New Relic Java Ansible Role has been archived due to its low usage. It is still usable in its current state.
+
 # Ansible role: New Relic Java agent
 
 [![Molecule Test](https://github.com/newrelic/newrelic-java-agent-ansible-role/workflows/Molecule%20Test/badge.svg)](https://github.com/newrelic/newrelic-java-agent-ansible-role/actions?query=workflow%3A%22Molecule+Test%22)
