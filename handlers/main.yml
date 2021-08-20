@@ -4,4 +4,41 @@
     name: "{{ service_name }}"
     state: restarted
   become: yes
-  when: restart_web_server|default(true)|bool
+  when: 
+    - restart_web_server|default(true)|bool
+    - server_type != "websphere"
+
+- name: websphere app server restart script copy
+  copy:
+    src: "{{ role_path }}/files/restartWAS.py"
+    dest: "{{ server_root }}/newrelic/restartWAS.py"
+    owner: "{{ server_user }}"
+    group: "{{ server_group }}"
+    mode: "0750"
+  when: 
+    - server_type == "websphere"
+    - restart_web_server|default(false)|bool
+  become: yes
+  register: restartWASCopy
+  listen: restart web server
+
+- name: websphere app server restart with auth
+  command: "{{ was_profile_root }}/bin/wsadmin.sh -conntype {{ wsadmin_conntype | default('SOAP') }} -host {{ wsadmin_host }} -port {{ wsadmin_port }} -user {{ wsadmin_user }} -password {{ wsadmin_password }} -f {{ restartWASCopy.dest }} {{ was_server_or_cluster_name }}"
+  become: yes
+  when:
+    - server_type == "websphere"
+    - restart_web_server|default(false)|bool
+    - wsadmin_auth|default(false)|bool
+  listen: restart web server
+  throttle: 1
+
+- name: websphere app server restart no auth
+  command: "{{ was_profile_root }}/bin/wsadmin.sh -f {{ restartWASCopy.dest }} {{ was_server_or_cluster_name }}"
+  become: yes
+  when:
+    - server_type == "websphere"
+    - restart_web_server|default(false)|bool
+    - not wsadmin_auth|default(false)|bool
+  listen: restart web server
+  throttle: 1
+

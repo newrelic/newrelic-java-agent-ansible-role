@@ -8,7 +8,7 @@ New Relic Java Ansible Role has been archived due to its low usage. It is still 
 
 [![Molecule Test](https://github.com/newrelic/newrelic-java-agent-ansible-role/workflows/Molecule%20Test/badge.svg)](https://github.com/newrelic/newrelic-java-agent-ansible-role/actions?query=workflow%3A%22Molecule+Test%22)
 
-This role installs and configures the [New Relic Java agent][3]. It should work with minimal configuration for applications running under Tomcat, Jetty, or Wildfly. We aim to support the most popular Java web servers over time.
+This role installs and configures the [New Relic Java agent][3]. It should work with minimal configuration for applications running under Tomcat, Jetty, Wildfly, or WebSphere. We aim to support the most popular Java web servers over time.
 
 * [Requirements](#Requirements)
 * [Installation](#Installation)
@@ -17,6 +17,7 @@ This role installs and configures the [New Relic Java agent][3]. It should work 
 	* [Agent configuration variables](#Agentconfigurationvariables)
 	* [Other agent-specific configuration](#Otheragent-specificconfiguration)
 	* [Using your own agent config file](#Usingyourownagentconfigfile)
+  * [WebSphere](#WebSphere)
 * [Example usage](#Exampleusage)
 * [Community](#Community)
 * [Issues / Enhancement Requests](#IssuesEnhancementRequests)
@@ -52,7 +53,7 @@ This role uses variables for two purposes: role configuration and agent configur
 
 #### <a name='server_type'></a>`server_type`
 **Required**
-Web server used by your application. Possible values are: `tomcat`, `jetty`, and `wildfly` (standalone mode only).
+Web server used by your application. Possible values are: `tomcat`, `jetty`, `wildfly` (standalone mode only), and `websphere`. For WebSphere, please see the [WebSphere configuration section](#WebSphere).
 
 #### <a name='server_root'></a>`server_root`
 **Required**
@@ -60,7 +61,7 @@ Location of the web server on the host. The agent's JAR, configuration, and log 
 
 #### <a name='jvm_conf_file'></a>`jvm_conf_file`
 **Required**
-Path of the web server configuration file to reference the New Relic Java agent. For Tomcat, for instance, it's `setenv.sh`. If it doesn't exist, the file will be created.
+Path of the web server configuration file to reference the New Relic Java agent. For Tomcat, for instance, it's `setenv.sh`. If it doesn't exist, the file will be created. This is not required for WebSphere.
 
 #### <a name='server_userserver_group'></a>`server_user` /  `server_group`
 **Required**
@@ -74,7 +75,7 @@ If set to false, the role does _not_ restart the web server after installing the
 
 #### <a name='service_name'></a>`service_name`
 **Required** (unless `restart_web_server` is set to `false`)
-Service name under which the web server runs. Used by Ansible to restart the web server after the agent is installed.
+Service name under which the web server runs. Used by Ansible to restart the web server after the agent is installed. This is not required for WebSphere.
 
 #### <a name='custom_instrumentation_files'></a>`custom_instrumentation_files`
 **Optional**
@@ -154,6 +155,81 @@ If this file is on the target hosts instead of on the system running Ansible, se
 ```yaml
 nr_java_agent_config_file_is_remote: true
 ```
+
+### <a name='WebSphere'></a>WebSphere
+
+Multiple additional configuration values are available for WebSphere application servers. Any values marked as required in this section are only required for `websphere` server types.As noted above, server_root should be set to the profile location and server_type should be `websphere`
+
+#### <a name='was_server_name'></a>`was_server_or_cluster_name`
+**Required**
+
+The WebSphere application server / JVM name or WebSphere cluster name. The -javaagent configuration will be added to the generic JVM arguments of this application server / JVM, or all application servers / JVMs that are a member of this cluster. This will also be used to determine which application servers are restarted. Specify `all` to instrument all application servers found from the deployment manager.
+
+**CAUTION: When using all or a cluster name, ensure that all application servers using this deployment manager or all application servers in the cluster are included in the Ansible execution so that the necessary javaagent files are in place. If the javaagent flag is added to an application server running on a host that does not have the Java agent files in place, the application server will not start properly after the javaagent flag is in place.**
+
+#### <a name='was_profile_root'></a>`was_profile_root`
+**Required**
+
+Set to the WebSphere profile location. This will be used to locate the appropriate wsadmin.sh script. Example value: `/opt/IBM/WebSphere/AppServer/profiles/Managed1`
+
+#### <a name='was_add_or_replace'></a>`was_add_or_replace`
+**Optional** - **Default:** `add`
+
+Set to `add` or `replace` to control if the New Relic javaagent argument is added alongside existing javaagent arguments or if it should replace all existing javaagent arguments.
+
+* If set to `add` the New Relic javaagent argument will be added alongside any javaagent arguments in the existing configuration
+* If set to `replace` all other javaagent arguments will be removed and the New Relic javaagent argument will be added.
+* If `add` was previously used to deploy New Relic alongside other agents, `replace` can be used in the future to remove all non New Relic javaagent arguments
+
+#### <a name='was_java_security_update'></a>`was_java_security_update`
+**Optional** - **Default:** `false`
+
+A boolean value that will trigger Java 2 security updates. If true, this will update the java.policy file to enable New Relic for all app servers as described in the [New Relic Java agent documentation.](https://docs.newrelic.com/docs/agents/java-agent/installation/install-java-agent-java-2-security#websphere-java-2) A backup version of the file will be created in the same directory. This requires `was_version`, `was_root`, and `was_java_version` to be set.
+
+#### <a name='was_version'></a>`was_version`
+**Optional**
+
+Set to `8.x` or `9.x`. This is required if `was_java_security_update` is true.
+
+#### <a name='was_root'></a>`was_root`
+**Optional**
+
+Set to the WebSphere install directory. Will be used to locate the java directory that contains the Java 2 java.policy file. This is required if `was_java_security_update` is true. Example value: `/opt/IBM/WebSphere/AppServer`
+
+#### <a name='was_java_version'></a>`was_java_version`
+**Optional**
+
+The path to the java.policy file includes a directory that reflects the current Java version for WebSphere 9.x. This is required if `was_java_security_update` is true and `was_version` is 9.x. Example value: `8.0`
+
+#### <a name='wsadmin_auth'></a>`wsadmin_auth`
+**Optional** - **Default:** `false`
+
+A boolean value indicating if authentication is required when executing wsadmin scripts. Set to true and define `wsadmin_conntype`, `wsadmin_host`, `wsadmin_port`, `wsadmin_user`, and `wsadmin_password` if authentication is not predefined in soap.properties or wsadmin.properties for the WebSphere profile.
+
+#### <a name='wsadmin_conntype'></a>`wsadmin_conntype`
+**Optional** - **Default:** `SOAP`
+
+The connection type used by wsadmin.sh. Options include `SOAP`, `RMI`, `JSR160RMI`, and `IPC`.
+
+#### <a name='wsadmin_host'></a>`wsadmin_host`
+**Optional**
+
+The host to connect to when executing wsadmin.sh. **Required if `wsadmin_auth` is true.** This should be the domain manager management host in a clustered environment.
+
+#### <a name='wsadmin_port'></a>`wsadmin_port`
+**Optional**
+
+The port to connect to when executing wsadmin.sh. **Reqired if `wsadmin_auth` is true.** This should be the domain manager management port in a clustered environment.
+
+#### <a name='wsadmin_user'></a>`wsadmin_user`
+**Optional**
+
+The user to use when executing wsadmin.sh. **Required if `wsadmin_auth` is true.**
+
+#### <a name='wsadmin_password'></a>`wsadmin_password`
+**Optional**
+
+The password to use when executing wsadmin.sh. **Required if `wsadmin_auth` is true.** [Ansible vault can be used to encrypt this value.](https://docs.ansible.com/ansible/latest/user_guide/vault.html)
 
 ## <a name='Exampleusage'></a>Example usage
 
